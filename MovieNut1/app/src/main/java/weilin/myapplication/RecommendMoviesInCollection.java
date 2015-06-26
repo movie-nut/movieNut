@@ -36,15 +36,22 @@ public class RecommendMoviesInCollection extends Activity {
         TmdbSearch searchResult = accountApi.getSearch();
         List<Collection> list = searchResult.searchCollection(searchKeyWord, "", null).getResults();
 
-        try {
-            getId(list);
-        } catch (Exception e) {
-            e.printStackTrace();
+        getId(list);
+
+        if(id == -1){
+            returnHomePage();
+        } else {
+
+            String displayMovies = getMoviesInString(accountApi);
+            display(displayMovies);
         }
+    }
 
-        String displayMovies = getMoviesInString(accountApi);
-
-        display(displayMovies);
+    private void returnHomePage() {
+        Intent returnHome = new Intent(this, MainActivity.class);
+        startActivity(returnHome);
+        this.finish();
+        Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
     private String getMoviesInString(TmdbApi accountApi) {
@@ -63,10 +70,8 @@ public class RecommendMoviesInCollection extends Activity {
 
     private void getId(List<Collection> list) {
         if (list.size() <= 0) {
-            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
-            Intent returnHome = new Intent(this, MainActivity.class);
-            startActivity(returnHome);
-            finish();
+            id = -1;
+
         } else {
             id = list.get(0).getId();
         }

@@ -2,18 +2,22 @@ package weilin.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collection;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.Artwork;
 import info.movito.themoviedbapi.model.MovieDb;
 
 public class RecommendSimilarMovie extends Activity {
@@ -29,17 +33,29 @@ public class RecommendSimilarMovie extends Activity {
         permitsNetwork();
 
         TmdbApi accountApi = new TmdbApi("3f2950a48b75db414b1dbb148cfcad89");
-            TmdbSearch searchResult = accountApi.getSearch();
-            List<MovieDb> list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
+        TmdbSearch searchResult = accountApi.getSearch();
+        List<MovieDb> list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
 
         getId(list);
-        TmdbMovies movies = accountApi.getMovies();
-        MovieDb movie = movies.getMovie(id, "en");
+
+        if (id == -1) {
+            returnHomePage();
+        } else {
+           TmdbMovies movies = accountApi.getMovies();
+           MovieDb movie = movies.getMovie(id, "en");
 //        List<MovieDb> similarMovies = movie.getSimilarMovies();
 
-        String displayMovies = getListOfMovies(accountApi);
+          String displayMovies = getListOfMovies(accountApi);
 
-        display(displayMovies);
+         display(displayMovies);
+    }
+    }
+
+    private void returnHomePage() {
+        Intent returnHome = new Intent(this, MainActivity.class);
+        startActivity(returnHome);
+        this.finish();
+        Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
     private String getListOfMovies(TmdbApi accountApi) {
@@ -49,10 +65,15 @@ public class RecommendSimilarMovie extends Activity {
 
         String displayMovies = "Movies     Release Date";
 
+        String image;
         for (int i = 0; i < result.size(); i++) {
+
             displayMovies = displayMovies + result.get(i).getOriginalTitle() + "     "
                     + result.get(i).getReleaseDate() + "\n";
-                    //+ " " + similarMovies.get(i).getName() + "\n";
+
+            ImageView mImage = (ImageView) findViewById(R.id.imageView);
+            mImage.setImageBitmap(BitmapFactory.decodeFile(result.get(i).getPosterPath()));
+
         }
         return displayMovies;
     }

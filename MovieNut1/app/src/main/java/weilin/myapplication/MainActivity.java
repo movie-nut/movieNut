@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         String searchKeyword = movieOut.getText().toString();
 
         checkNullSearchValue(searchKeyword);
-        
+
         //APi : 3f2950a48b75db414b1dbb148cfcad89
         //weblink: http://api.themoviedb.org/3/movie/550?api_key=3f2950a48b75db414b1dbb148cfcad89
         //http://api.themoviedb.org/3/search/movie?api_key=3f2950a48b75db414b1dbb148cfcad89&query=avengers
@@ -53,12 +53,10 @@ public class MainActivity extends Activity {
 
         intent.putExtra("searchKeyWord", searchKeyword);
         startActivity(intent);
-
-
 }
 
     private void checkNullSearchValue(String searchKeyword) {
-        if(searchKeyword.equals(null)){
+        if(searchKeyword.equals("")){
             Toast.makeText(getApplicationContext(), "No Keyword entered!!!",
                     Toast.LENGTH_LONG).show();
             finish();

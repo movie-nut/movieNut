@@ -24,7 +24,7 @@
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/button"
         android:layout_toStartOf="@+id/button"
-        android:hint="Input Movie" />
+        android:hint="Input Movie or People" />
 
     <TextView
         android:layout_width="wrap_content"

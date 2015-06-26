@@ -35,9 +35,21 @@ public class RecommendMovieByPeople extends Activity {
 
         getId(list);
 
-        String displayMovies = getMoviesInString(accountApi);
+        if(id == -1){
+            returnHomePage();
+        } else {
 
-        display(displayMovies);
+            String displayMovies = getMoviesInString(accountApi);
+
+            display(displayMovies);
+        }
+    }
+
+    private void returnHomePage() {
+        Intent returnHome = new Intent(this, MainActivity.class);
+        startActivity(returnHome);
+        this.finish();
+        Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
     private String getMoviesInString(TmdbApi accountApi) {
@@ -65,9 +77,9 @@ public class RecommendMovieByPeople extends Activity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-            } else {
-                id = list.get(0).getId();
-            }
+        } else {
+            id = list.get(0).getId();
+        }
     }
 
     private String getSearchKeyword() {
