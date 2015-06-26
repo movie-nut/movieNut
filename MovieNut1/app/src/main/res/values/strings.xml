@@ -4,4 +4,22 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_movie_detail">MovieDetail</string>
+
+    <string name="recommendation_prompt">Choose a type of recommendation</string>
+    <string-array name="recommendationType">
+        <item>1. People (eg: directors, actors, authors)</item>
+        <item>2. Movies</item>
+        <item>3. Collections</item>
+        <item>4. Companies</item>
+    </string-array>
+    <string name="title_activity_recommend_movie_by_director">recommendMovieByDirector</string>
+    <string name="title_activity_recommend_movies_in_collection">RecommendMoviesInCollection
+    </string>
+    <string name="title_activity_recommend_movies_by_company">RecommendMoviesInCollection
+    </string>
+
+
+
+
+
 </resources>

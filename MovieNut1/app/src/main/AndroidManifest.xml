@@ -20,8 +20,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".java.MovieDetail"
+            android:name=".RecommendSimilarMovie"
             android:label="@string/title_activity_movie_detail" >
+        </activity>
+        <activity
+            android:name=".RecommendMovieByPeople"
+            android:label="@string/title_activity_recommend_movie_by_director" >
+        </activity>
+        <activity
+            android:name=".RecommendMoviesInCollection"
+            android:label="@string/title_activity_recommend_movies_in_collection" >
+        </activity>
+        <activity
+            android:name=".RecommendMoviesByCompany"
+            android:label="@string/title_activity_recommend_movies_by_company" >
         </activity>
     </application>
 
