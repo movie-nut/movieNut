@@ -36,9 +36,12 @@ public class MainActivity extends Activity {
     public void buttonOnClick(View v) throws IOException {
         Button button = (Button) v;
         movieOut = (EditText) findViewById(R.id.txtMovies);
-
         textout = (TextView) findViewById(R.id.textView);
 
+        String searchKeyword = movieOut.getText().toString();
+
+        checkNullSearchValue(searchKeyword);
+        
         //APi : 3f2950a48b75db414b1dbb148cfcad89
         //weblink: http://api.themoviedb.org/3/movie/550?api_key=3f2950a48b75db414b1dbb148cfcad89
         //http://api.themoviedb.org/3/search/movie?api_key=3f2950a48b75db414b1dbb148cfcad89&query=avengers
@@ -48,32 +51,36 @@ public class MainActivity extends Activity {
 
         Intent intent = handleDiffTypes();
 
-      //  textout.setText(movieOut.getText().toString());
-
-        intent.putExtra("searchKeyWord", movieOut.getText().toString());
+        intent.putExtra("searchKeyWord", searchKeyword);
         startActivity(intent);
 
 
 }
 
+    private void checkNullSearchValue(String searchKeyword) {
+        if(searchKeyword.equals(null)){
+            Toast.makeText(getApplicationContext(), "No Keyword entered!!!",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
     private Intent handleDiffTypes() {
         Intent intent = null;
-        try {
-            if (selectedType.contains("1. People")) {
-                intent = new Intent(this, RecommendMovieByPeople.class);
 
-            } else if (selectedType.equals("2. Movies")) {
-                intent = new Intent(this, RecommendSimilarMovie.class);
+        if (selectedType.contains("1. People")) {
+            intent = new Intent(this, RecommendMovieByPeople.class);
 
-            } else if (selectedType.equals("3. Collections")) {
-                intent = new Intent(this, RecommendMoviesInCollection.class);
+        } else if (selectedType.equals("2. Movies")) {
+            intent = new Intent(this, RecommendSimilarMovie.class);
 
-            } else if (selectedType.equals("4. Companies")) {
-                intent = new Intent(this, RecommendMoviesByCompany.class);
-            }
-        }  catch (Exception exception) {
-            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
+        } else if (selectedType.equals("3. Collections")) {
+            intent = new Intent(this, RecommendMoviesInCollection.class);
+
+        } else if (selectedType.equals("4. Companies")) {
+            intent = new Intent(this, RecommendMoviesByCompany.class);
         }
+
         return intent;
     }
 

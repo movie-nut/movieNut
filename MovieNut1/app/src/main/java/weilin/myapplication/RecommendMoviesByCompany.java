@@ -22,7 +22,7 @@ public class RecommendMoviesByCompany extends Activity {
     int id;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommend_movies_by_company);
@@ -43,16 +43,15 @@ public class RecommendMoviesByCompany extends Activity {
         display();
     }
 
-    private void getId(List<Company> list) throws IllegalArgumentException {
-        try {
-            if(list.size() <= 0){
-                throw new IllegalArgumentException("Search Keyword is not detected!");
-            } else {
-                id = list.get(0).getId();
-            }
-
-        } catch (IllegalArgumentException exception) {
-            throw exception;
+    private void getId(List<Company> list) {
+        if(list.size() <= 0){
+            Toast.makeText(getApplicationContext(), "Keyword typed not found!!!",
+                        Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            id = list.get(0).getId();
         }
     }
 

@@ -7,6 +7,7 @@ import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class RecommendMovieByPeople extends Activity {
     int id;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommend_movie_by_people);
         String searchKeyWord = getSearchKeyword();
@@ -58,16 +59,15 @@ public class RecommendMovieByPeople extends Activity {
     }
 
     private void getId(List<Person> list) {
-        try {
-            if(list.size() <= 0){
-                throw new IllegalArgumentException("Search Keyword is not detected!");
+        if(list.size() <= 0){
+            Toast.makeText(getApplicationContext(), "Keyword typed not found!!!",
+                    Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
             } else {
                 id = list.get(0).getId();
             }
-
-        } catch (IllegalArgumentException exception) {
-            throw exception;
-        }
     }
 
     private String getSearchKeyword() {

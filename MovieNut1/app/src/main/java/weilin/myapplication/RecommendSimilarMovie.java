@@ -7,6 +7,7 @@ import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -67,15 +68,13 @@ public class RecommendSimilarMovie extends Activity {
     }
 
     private void getId(List<MovieDb> list) {
-        try {
-            if(list.size() <= 0){
-                throw new IllegalArgumentException("Search Keyword is not detected!");
-            } else {
-                id = list.get(0).getId();
-            }
-
-        } catch (IllegalArgumentException exception) {
-            throw exception;
+        if(list.size() <= 0){
+            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
+            Intent returnHome = new Intent(this, MainActivity.class);
+            startActivity(returnHome);
+            finish();
+        } else {
+            id = list.get(0).getId();
         }
     }
 

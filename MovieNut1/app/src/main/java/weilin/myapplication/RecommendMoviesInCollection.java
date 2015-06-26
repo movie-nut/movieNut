@@ -62,14 +62,14 @@ public class RecommendMoviesInCollection extends Activity {
     }
 
     private void getId(List<Collection> list) {
-            if (list.size() <= 0) {
-               Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
-                finish();
-                Intent returnHome = new Intent(this, MainActivity.class);
-                startActivity(returnHome);
-            } else {
-                id = list.get(0).getId();
-            }
+        if (list.size() <= 0) {
+            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
+            Intent returnHome = new Intent(this, MainActivity.class);
+            startActivity(returnHome);
+            finish();
+        } else {
+            id = list.get(0).getId();
+        }
     }
 
     private void permitsNetwork() {
