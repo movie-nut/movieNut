@@ -15,17 +15,21 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.Collection;
 import info.movito.themoviedbapi.model.CollectionInfo;
+import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCredit;
 
 
 public class RecommendMoviesInCollection extends Activity {
     int id;
+    String displayMovies = "Movies     Release Date" + "\n";
+    String description = "\n";
+    String[] listOfDescription;
+    String[] moviesInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommend_movies_in_collection);
 
         Intent intent = getIntent();
         String searchKeyWord = intent.getStringExtra("searchKeyWord");
@@ -42,8 +46,12 @@ public class RecommendMoviesInCollection extends Activity {
             returnHomePage();
         } else {
 
-            String displayMovies = getMoviesInString(accountApi);
-            display(displayMovies);
+            getMoviesInString(accountApi);
+            Intent displyResults = new Intent(this, DisplayResults.class);
+            displyResults.putExtra("movieInfo", moviesInfo);
+            displyResults.putExtra("description", listOfDescription);
+            startActivity(displyResults);
+            finish();
         }
     }
 
@@ -54,18 +62,17 @@ public class RecommendMoviesInCollection extends Activity {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private String getMoviesInString(TmdbApi accountApi) {
+    private void getMoviesInString(TmdbApi accountApi) {
+        MovieDb movie;
         List<Collection> result = accountApi.getCollections().getCollectionInfo(id, "").getParts();
 
-        String displayMovies = "Movie Title" + "\n";
-
-
         for (int i = 0; i < result.size(); i++) {
-            displayMovies = displayMovies + result.get(i).getName() + "\n";
-                 //   + result.get(i).getCharacter() + "     " + result.get(i).getReleaseDate() + "\n";
-
+            displayMovies = displayMovies + result.get(i).getName()+ "(" + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
+            movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
+            description = description + movie.getOverview() + "\n";
         }
-        return displayMovies;
+        moviesInfo = displayMovies.split("\\r?\\n");
+        listOfDescription = description.split("\\r?\\n");
     }
 
     private void getId(List<Collection> list) {
@@ -84,30 +91,4 @@ public class RecommendMoviesInCollection extends Activity {
         }
     }
 
-    private void display(String displayMovies) {
-        TextView textout = (TextView) findViewById(R.id.textView2);
-        textout.setText(displayMovies);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_recommend_movies_in_collection, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

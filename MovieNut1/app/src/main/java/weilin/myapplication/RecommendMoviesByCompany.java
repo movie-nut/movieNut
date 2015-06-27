@@ -15,17 +15,20 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.Collection;
 import info.movito.themoviedbapi.model.Company;
+import info.movito.themoviedbapi.model.MovieDb;
 
 
 public class RecommendMoviesByCompany extends Activity {
-   private String displayMovies;
+    String displayMovies = "Movies     Release Date" + "\n";
+    String description = "\n";
+    String[] listOfDescription;
+    String[] moviesInfo;
     int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommend_movies_by_company);
 
         String searchKeyWord = getSearchKeyword();
 
@@ -43,7 +46,11 @@ public class RecommendMoviesByCompany extends Activity {
         } else {
 
             getListOfMovies(searchKeyWord, accountApi, id);
-            display();
+            Intent displyResults = new Intent(this, DisplayResults.class);
+            displyResults.putExtra("movieInfo", moviesInfo);
+            displyResults.putExtra("description", listOfDescription);
+            startActivity(displyResults);
+            finish();
         }
     }
 
@@ -56,28 +63,24 @@ public class RecommendMoviesByCompany extends Activity {
 
     private void getId(List<Company> list) {
         if(list.size() <= 0){
-            Toast.makeText(getApplicationContext(), "Keyword typed not found!!!",
-                        Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            id = -1;
         } else {
             id = list.get(0).getId();
         }
     }
 
-    private void display() {
-        TextView textOut = (TextView) findViewById(R.id.textView);
-        textOut.setText(displayMovies);
-    }
-
     private void getListOfMovies(String searchKeyWord, TmdbApi accountApi, int id) {
         List<Collection> result = accountApi.getCompany().getCompanyMovies(id, "", 0).getResults();
 
-        displayMovies = "Company" + searchKeyWord + "\n";
+        displayMovies = "Company" + " " + searchKeyWord + "\n";
+        MovieDb movie;
         for (int i = 0; i < result.size(); i++) {
-            displayMovies = displayMovies + result.get(i).getName() + "\n";
+            displayMovies = displayMovies + result.get(i).getName() + "(" + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
+            movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
+           description = description + movie.getOverview() + "\n";
         }
+        moviesInfo = displayMovies.split("\\r?\\n");
+        listOfDescription = description.split("\\r?\\n");
     }
 
     private String getSearchKeyword() {

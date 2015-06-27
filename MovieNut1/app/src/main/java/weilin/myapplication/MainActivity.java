@@ -48,38 +48,40 @@ public class MainActivity extends Activity {
       //  http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89
 
         doSpinner();
+        Intent intent;
 
-        Intent intent = handleDiffTypes();
+        if (selectedType.contains("1. People")) {
+            intent = new Intent(this, RecommendMovieByPeople.class);
+            intent.putExtra("searchKeyWord", searchKeyword);
+            startActivity(intent);
 
-        intent.putExtra("searchKeyWord", searchKeyword);
-        startActivity(intent);
+        } else if (selectedType.equals("2. Movies")) {
+             intent = new Intent(this, RecommendSimilarMovie.class);
+            intent.putExtra("searchKeyWord", searchKeyword);
+            startActivity(intent);
+
+        } else if (selectedType.equals("3. Collections")) {
+            intent = new Intent(this, RecommendMoviesInCollection.class);
+            intent.putExtra("searchKeyWord", searchKeyword);
+            startActivity(intent);
+
+        } else if (selectedType.equals("4. Companies")) {
+            intent = new Intent(this, RecommendMoviesByCompany.class);
+            intent.putExtra("searchKeyWord", searchKeyword);
+            startActivity(intent);
+        }
+
+
+
+
 }
 
     private void checkNullSearchValue(String searchKeyword) {
-        if(searchKeyword.equals("")){
+        if (searchKeyword.equals("")) {
             Toast.makeText(getApplicationContext(), "No Keyword entered!!!",
                     Toast.LENGTH_LONG).show();
             finish();
         }
-    }
-
-    private Intent handleDiffTypes() {
-        Intent intent = null;
-
-        if (selectedType.contains("1. People")) {
-            intent = new Intent(this, RecommendMovieByPeople.class);
-
-        } else if (selectedType.equals("2. Movies")) {
-            intent = new Intent(this, RecommendSimilarMovie.class);
-
-        } else if (selectedType.equals("3. Collections")) {
-            intent = new Intent(this, RecommendMoviesInCollection.class);
-
-        } else if (selectedType.equals("4. Companies")) {
-            intent = new Intent(this, RecommendMoviesByCompany.class);
-        }
-
-        return intent;
     }
 
     private void doSpinner() {

@@ -8,11 +8,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="MovieNut"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="MovieNut" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,20 +20,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecommendSimilarMovie"
-            android:label="@string/title_activity_movie_detail" >
+            android:name=".RecommendSimilarMovie" >
         </activity>
         <activity
-            android:name=".RecommendMovieByPeople"
-            android:label="@string/title_activity_recommend_movie_by_director" >
+            android:name=".RecommendMovieByPeople">
         </activity>
         <activity
-            android:name=".RecommendMoviesInCollection"
-            android:label="@string/title_activity_recommend_movies_in_collection" >
+            android:name=".RecommendMoviesInCollection" >
         </activity>
         <activity
-            android:name=".RecommendMoviesByCompany"
-            android:label="@string/title_activity_recommend_movies_by_company" >
+            android:name=".RecommendMoviesByCompany">
+        </activity>
+        <activity
+            android:name=".DisplayResults"
+            android:label="Movie Result" >
         </activity>
     </application>
 

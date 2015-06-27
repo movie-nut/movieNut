@@ -13,17 +13,21 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCredit;
 
 
 public class RecommendMovieByPeople extends Activity {
     int id;
+    String displayMovies = "Movie Title     Character     Release Date" + "\n";
+    String description = "\n" + "\n";
+    String[] listOfDescription;
+    String[] moviesInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommend_movie_by_people);
         String searchKeyWord = getSearchKeyword();
 
         permitsNetwork();
@@ -39,9 +43,12 @@ public class RecommendMovieByPeople extends Activity {
             returnHomePage();
         } else {
 
-            String displayMovies = getMoviesInString(accountApi);
-
-            display(displayMovies);
+            getMoviesInString(accountApi);
+            Intent displyResults = new Intent(this, DisplayResults.class);
+            displyResults.putExtra("movieInfo", moviesInfo);
+            displyResults.putExtra("description", listOfDescription);
+            startActivity(displyResults);
+            finish();
         }
     }
 
@@ -52,32 +59,25 @@ public class RecommendMovieByPeople extends Activity {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private String getMoviesInString(TmdbApi accountApi) {
+    private void getMoviesInString(TmdbApi accountApi) {
+        MovieDb movie;
         List<PersonCredit> result = accountApi.getPeople().getPersonCredits(id).getCast();
 
-        String displayMovies = "Movie Title     Character     Release Date" + "\n";
-
-
         for (int i = 0; i < result.size(); i++) {
-            displayMovies = displayMovies + result.get(i).getMovieOriginalTitle() + "     "
-                    + result.get(i).getCharacter() + "     " + result.get(i).getReleaseDate() + "\n";
+            displayMovies = displayMovies + result.get(i).getMovieOriginalTitle() +" -> "
+                    + result.get(i).getCharacter() + "(" + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
+            movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
+            description = description + movie.getOverview() + "\n";
         }
-        return displayMovies;
-    }
-
-    private void display(String displayMovies) {
-        TextView textout = (TextView) findViewById(R.id.textView2);
-        textout.setText(displayMovies);
+        moviesInfo = displayMovies.split("\\r?\\n");
+        listOfDescription = description.split("\\r?\\n");
     }
 
     private void getId(List<Person> list) {
         if(list.size() <= 0){
-            Toast.makeText(getApplicationContext(), "Keyword typed not found!!!",
-                    Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+           id = -1;
         } else {
+            displayMovies = list.get(0).getName() + "\n" + displayMovies;
             id = list.get(0).getId();
         }
     }
@@ -94,25 +94,5 @@ public class RecommendMovieByPeople extends Activity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_recommend_movie_by_people, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

@@ -2,7 +2,9 @@ package weilin.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -11,22 +13,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.Artwork;
 import info.movito.themoviedbapi.model.MovieDb;
 
 public class RecommendSimilarMovie extends Activity {
     int id;
+    String displayMovies = "Movies     Release Date" + "\n";
+    String description = "\n";
+    String[] listOfDescription;
+    String[] moviesInfo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_similar_movie);
 
         String searchKeyWord = getSearchKeyword();
 
@@ -41,13 +48,13 @@ public class RecommendSimilarMovie extends Activity {
         if (id == -1) {
             returnHomePage();
         } else {
-           TmdbMovies movies = accountApi.getMovies();
-           MovieDb movie = movies.getMovie(id, "en");
-//        List<MovieDb> similarMovies = movie.getSimilarMovies();
 
-          String displayMovies = getListOfMovies(accountApi);
-
-         display(displayMovies);
+            getListOfMovies(accountApi);
+            Intent displyResults = new Intent(this, DisplayResults.class);
+            displyResults.putExtra("movieInfo", moviesInfo);
+            displyResults.putExtra("description", listOfDescription);
+            startActivity(displyResults);
+            finish();
     }
     }
 
@@ -58,29 +65,30 @@ public class RecommendSimilarMovie extends Activity {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private String getListOfMovies(TmdbApi accountApi) {
+    private void getListOfMovies(TmdbApi accountApi) {
         List<MovieDb> result = accountApi.getMovies().getSimilarMovies(id, "en", 0).getResults();
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
-        String displayMovies = "Movies     Release Date";
-
         String image;
         for (int i = 0; i < result.size(); i++) {
 
-            displayMovies = displayMovies + result.get(i).getOriginalTitle() + "     "
-                    + result.get(i).getReleaseDate() + "\n";
+            displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
+                    + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
 
-            ImageView mImage = (ImageView) findViewById(R.id.imageView);
-            mImage.setImageBitmap(BitmapFactory.decodeFile(result.get(i).getPosterPath()));
+
+            description = description + result.get(i).getOverview() + "\n";
+
+            image = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString();
+
+         //   ImageView mImage = (ImageView) findViewById(R.id.imageView);
+            //Uri url = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original");
+       //     mImage.setImageURI(url);
+           // mImage.setImageBitmap(BitmapFactory.decodeFile(result.get(i).getPosterPath());
 
         }
-        return displayMovies;
-    }
-
-    private void display(String displayMovies) {
-        TextView textout = (TextView) findViewById(R.id.textView2);
-        textout.setText(displayMovies);
+         moviesInfo = displayMovies.split("\\r?\\n");
+         listOfDescription = description.split("\\r?\\n");
     }
 
     private String getSearchKeyword() {
@@ -90,10 +98,7 @@ public class RecommendSimilarMovie extends Activity {
 
     private void getId(List<MovieDb> list) {
         if(list.size() <= 0){
-            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
-            Intent returnHome = new Intent(this, MainActivity.class);
-            startActivity(returnHome);
-            finish();
+            id = -1;
         } else {
             id = list.get(0).getId();
         }
