@@ -19,7 +19,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 
 
 public class RecommendMoviesByCompany extends Activity {
-    String displayMovies = "Movies     Release Date" + "\n";
+    String displayMovies = "";
     String description = "\n";
     String[] listOfDescription;
     String[] moviesInfo;
@@ -71,13 +71,28 @@ public class RecommendMoviesByCompany extends Activity {
 
     private void getListOfMovies(String searchKeyWord, TmdbApi accountApi, int id) {
         List<Collection> result = accountApi.getCompany().getCompanyMovies(id, "", 0).getResults();
-
+        String releaseDate;
         displayMovies = "Company" + " " + searchKeyWord + "\n";
         MovieDb movie;
+
+
+
         for (int i = 0; i < result.size(); i++) {
-            displayMovies = displayMovies + result.get(i).getName() + "(" + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
+            releaseDate = result.get(i).getReleaseDate();
+            if(releaseDate == null){
+                releaseDate = "unknown";
+            } else {
+                releaseDate = releaseDate.substring(0, 4);
+            }
+
+            displayMovies = displayMovies + result.get(i).getName() + "(" + releaseDate + ")" + "\n";
             movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
-           description = description + movie.getOverview() + "\n";
+
+            if(movie.getOverview().equals("")){
+                description = description + "NO DESCRIPTION YET" + "\n";
+            } else {
+                description = description + movie.getOverview() + "\n";
+            }
         }
         moviesInfo = displayMovies.split("\\r?\\n");
         listOfDescription = description.split("\\r?\\n");

@@ -28,7 +28,6 @@ public class DisplayResults extends Activity {
 
         getMoviesInfo();
 
-
         ListView list = (ListView) findViewById(R.id.listView);
         moviesAdapter adapter = new moviesAdapter(this, moviesInfo, description, description);
         list.setAdapter(adapter);

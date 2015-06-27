@@ -20,7 +20,7 @@ import info.movito.themoviedbapi.model.people.PersonCredit;
 
 public class RecommendMovieByPeople extends Activity {
     int id;
-    String displayMovies = "Movie Title     Character     Release Date" + "\n";
+    String displayMovies = "";
     String description = "\n" + "\n";
     String[] listOfDescription;
     String[] moviesInfo;
@@ -42,7 +42,6 @@ public class RecommendMovieByPeople extends Activity {
         if(id == -1){
             returnHomePage();
         } else {
-
             getMoviesInString(accountApi);
             Intent displyResults = new Intent(this, DisplayResults.class);
             displyResults.putExtra("movieInfo", moviesInfo);
@@ -61,16 +60,44 @@ public class RecommendMovieByPeople extends Activity {
 
     private void getMoviesInString(TmdbApi accountApi) {
         MovieDb movie;
+        String releaseDate, movieTitle, character;
         List<PersonCredit> result = accountApi.getPeople().getPersonCredits(id).getCast();
 
+        //String bio = accountApi.getPeople().getPersonInfo(id).getBiography();
+       // displayMovies = displayMovies + " " + bio;
         for (int i = 0; i < result.size(); i++) {
-            displayMovies = displayMovies + result.get(i).getMovieOriginalTitle() +" -> "
-                    + result.get(i).getCharacter() + "(" + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
-            movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
-            description = description + movie.getOverview() + "\n";
+            releaseDate = result.get(i).getReleaseDate();
+            movieTitle = result.get(i).getMovieOriginalTitle();
+
+            if(result.get(i).getCharacter().equals("")){
+                character = "NOT KNOWN YET";
+            } else {
+                character = result.get(i).getCharacter();
+            }
+
+            if(releaseDate == null){
+                releaseDate = "unknown";
+            } else {
+                releaseDate = releaseDate.substring(0, 4);
+            }
+
+                displayMovies = displayMovies + movieTitle +
+                        "(" + releaseDate + ")" +" act as "
+                        + character + "\n";
+
+                assert result.get(i).getId() <= 0 : "null id";
+
+                movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
+                //description = description + "" + "\n";
+                if(movie.getOverview().equals("")){
+                    description = description + "NO DESCRIPTION YET" + "\n";
+                } else {
+                    description = description + movie.getOverview() + "\n";
+                }
         }
         moviesInfo = displayMovies.split("\\r?\\n");
         listOfDescription = description.split("\\r?\\n");
+
     }
 
     private void getId(List<Person> list) {

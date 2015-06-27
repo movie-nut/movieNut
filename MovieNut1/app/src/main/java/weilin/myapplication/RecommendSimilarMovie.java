@@ -26,7 +26,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 
 public class RecommendSimilarMovie extends Activity {
     int id;
-    String displayMovies = "Movies     Release Date" + "\n";
+    String displayMovies = "";
     String description = "\n";
     String[] listOfDescription;
     String[] moviesInfo;
@@ -36,6 +36,7 @@ public class RecommendSimilarMovie extends Activity {
         super.onCreate(savedInstanceState);
 
         String searchKeyWord = getSearchKeyword();
+       // displayMovies = "similar movies as" + searchKeyWord + "/n";
 
         permitsNetwork();
 
@@ -66,20 +67,30 @@ public class RecommendSimilarMovie extends Activity {
     }
 
     private void getListOfMovies(TmdbApi accountApi) {
+        String releaseDate;
         List<MovieDb> result = accountApi.getMovies().getSimilarMovies(id, "en", 0).getResults();
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
         String image;
         for (int i = 0; i < result.size(); i++) {
+            releaseDate = result.get(i).getReleaseDate();
+            if(releaseDate == null){
+                releaseDate = "unknown";
+            } else {
+                releaseDate = releaseDate.substring(0, 4);
+            }
 
             displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
-                    + result.get(i).getReleaseDate().substring(0, 4) + ")" + "\n";
+                    + releaseDate + ")" + "\n";
 
+            if(result.get(i).getOverview().equals("")){
+                description = description + "NO DESCRIPTION YET" + "\n";
+            } else {
+                description = description + result.get(i).getOverview() + "\n";
+            }
 
-            description = description + result.get(i).getOverview() + "\n";
-
-            image = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString();
+//            image = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString();
 
          //   ImageView mImage = (ImageView) findViewById(R.id.imageView);
             //Uri url = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original");
