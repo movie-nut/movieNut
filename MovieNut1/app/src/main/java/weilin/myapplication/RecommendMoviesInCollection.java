@@ -13,6 +13,7 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.Collection;
 import info.movito.themoviedbapi.model.CollectionInfo;
 import info.movito.themoviedbapi.model.MovieDb;
@@ -23,7 +24,9 @@ import info.movito.themoviedbapi.model.people.PersonCredit;
 public class RecommendMoviesInCollection extends Activity {
     int id;
     String displayMovies = "";
-    String description = "\n";
+    String description = "";
+    String image = "";
+    String[] listOfImage;
     String[] listOfDescription;
     String[] moviesInfo;
 
@@ -50,6 +53,7 @@ public class RecommendMoviesInCollection extends Activity {
             Intent displyResults = new Intent(this, DisplayResults.class);
             displyResults.putExtra("movieInfo", moviesInfo);
             displyResults.putExtra("description", listOfDescription);
+            displyResults.putExtra("image", listOfImage);
             startActivity(displyResults);
             finish();
         }
@@ -77,14 +81,22 @@ public class RecommendMoviesInCollection extends Activity {
             displayMovies = displayMovies + result.get(i).getName()+ "(" + releaseDate + ")" + "\n";
             movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
 
-            if(movie.getOverview().equals("")){
+            if(movie.getOverview() == null){
                 description = description + "NO DESCRIPTION YET" + "\n";
             } else {
                 description = description + movie.getOverview() + "\n";
             }
+
+            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() != null) {
+                image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
+
+            } else {
+                image = image + "" + "\n";
+            }
         }
         moviesInfo = displayMovies.split("\\r?\\n");
         listOfDescription = description.split("\\r?\\n");
+        listOfImage = image.split("\\r?\\n");
     }
 
     private void getId(List<Collection> list) {

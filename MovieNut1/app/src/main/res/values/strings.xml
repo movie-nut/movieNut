@@ -7,16 +7,18 @@
 
     <string name="recommendation_prompt">Choose a type of recommendation</string>
     <string-array name="recommendationType">
-        <item>1. People (eg: directors, actors, authors)</item>
-        <item>2. Movies</item>
-        <item>3. Collections</item>
-        <item>4. Companies</item>
+        <item>1. Directors or Authors</item>
+        <item>2. Actors or Actresses</item>
+        <item>3. Movies</item>
+        <item>4. Collections</item>
+        <item>5. Companies</item>
     </string-array>
     <string name="title_activity_recommend_movie_by_director">recommendMovieByDirector</string>
     <string name="title_activity_recommend_movies_in_collection">RecommendMoviesInCollection
     </string>
-    <string name="title_activity_recommend_movies_by_company">RecommendMoviesInCollection
+    <string name="title_activity_recommend_movies_by_company">RecommendMoviesByCompany
     </string>
+
 
 
 

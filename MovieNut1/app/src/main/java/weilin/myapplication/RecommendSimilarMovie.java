@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +29,10 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class RecommendSimilarMovie extends Activity {
     int id;
     String displayMovies = "";
-    String description = "\n";
+    String description = "";
     String[] listOfDescription;
     String[] moviesInfo;
+    String[] listOfImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +53,16 @@ public class RecommendSimilarMovie extends Activity {
             returnHomePage();
         } else {
 
-            getListOfMovies(accountApi);
-            Intent displyResults = new Intent(this, DisplayResults.class);
-            displyResults.putExtra("movieInfo", moviesInfo);
-            displyResults.putExtra("description", listOfDescription);
-            startActivity(displyResults);
+            try {
+                getListOfMovies(accountApi);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Intent displayResults = new Intent(this, DisplayResults.class);
+            displayResults.putExtra("movieInfo", moviesInfo);
+            displayResults.putExtra("description", listOfDescription);
+            displayResults.putExtra("image", listOfImage);
+            startActivity(displayResults);
             finish();
     }
     }
@@ -66,13 +74,13 @@ public class RecommendSimilarMovie extends Activity {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private void getListOfMovies(TmdbApi accountApi) {
+    private void getListOfMovies(TmdbApi accountApi) throws IOException {
         String releaseDate;
         List<MovieDb> result = accountApi.getMovies().getSimilarMovies(id, "en", 0).getResults();
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
-        String image;
+        String image = "";
         for (int i = 0; i < result.size(); i++) {
             releaseDate = result.get(i).getReleaseDate();
             if(releaseDate == null){
@@ -84,22 +92,22 @@ public class RecommendSimilarMovie extends Activity {
             displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
                     + releaseDate + ")" + "\n";
 
-            if(result.get(i).getOverview().equals("")){
+            if(result.get(i).getOverview() == null){
                 description = description + "NO DESCRIPTION YET" + "\n";
             } else {
                 description = description + result.get(i).getOverview() + "\n";
             }
+            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() != null) {
+                image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
 
-//            image = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString();
-
-         //   ImageView mImage = (ImageView) findViewById(R.id.imageView);
-            //Uri url = Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original");
-       //     mImage.setImageURI(url);
-           // mImage.setImageBitmap(BitmapFactory.decodeFile(result.get(i).getPosterPath());
+            } else {
+                image = image + "" + "\n";
+            }
 
         }
          moviesInfo = displayMovies.split("\\r?\\n");
          listOfDescription = description.split("\\r?\\n");
+        listOfImage = image.split("\\r?\\n");
     }
 
     private String getSearchKeyword() {

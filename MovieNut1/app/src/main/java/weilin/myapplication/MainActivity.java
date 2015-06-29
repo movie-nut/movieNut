@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     public void buttonOnClick(View v) throws IOException {
         Button button = (Button) v;
         movieOut = (EditText) findViewById(R.id.txtMovies);
-        textout = (TextView) findViewById(R.id.textView);
+       // textout = (TextView) findViewById(R.id.textView);
 
         String searchKeyword = movieOut.getText().toString();
 
@@ -50,30 +50,31 @@ public class MainActivity extends Activity {
         doSpinner();
         Intent intent;
 
-        if (selectedType.contains("1. People")) {
-            intent = new Intent(this, RecommendMovieByPeople.class);
+        if (selectedType.contains("Actors")) {
+            intent = new Intent(this, RecommendMovieByActor.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             startActivity(intent);
 
-        } else if (selectedType.equals("2. Movies")) {
+        } else if (selectedType.contains("Directors")) {
+            intent = new Intent(this, RecommendMoviesByDirectorAuthor.class);
+            intent.putExtra("searchKeyWord", searchKeyword);
+            startActivity(intent);
+
+        } else if (selectedType.equals("3. Movies")) {
              intent = new Intent(this, RecommendSimilarMovie.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             startActivity(intent);
 
-        } else if (selectedType.equals("3. Collections")) {
+        } else if (selectedType.equals("4. Collections")) {
             intent = new Intent(this, RecommendMoviesInCollection.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             startActivity(intent);
 
-        } else if (selectedType.equals("4. Companies")) {
+        } else if (selectedType.equals("5. Companies")) {
             intent = new Intent(this, RecommendMoviesByCompany.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             startActivity(intent);
         }
-
-
-
-
 }
 
     private void checkNullSearchValue(String searchKeyword) {
@@ -87,7 +88,7 @@ public class MainActivity extends Activity {
     private void doSpinner() {
         spinner1 = (Spinner) findViewById(R.id.spinner);
         selectedType = spinner1.getSelectedItem().toString();
-        textout.setText(selectedType);
+//        textout.setText(selectedType);
     }
 
     @Override

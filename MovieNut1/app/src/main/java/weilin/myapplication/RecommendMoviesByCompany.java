@@ -13,6 +13,7 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.Collection;
 import info.movito.themoviedbapi.model.Company;
 import info.movito.themoviedbapi.model.MovieDb;
@@ -21,6 +22,8 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class RecommendMoviesByCompany extends Activity {
     String displayMovies = "";
     String description = "\n";
+    String image = "\n";
+    String[] listOfImage;
     String[] listOfDescription;
     String[] moviesInfo;
     int id;
@@ -49,6 +52,7 @@ public class RecommendMoviesByCompany extends Activity {
             Intent displyResults = new Intent(this, DisplayResults.class);
             displyResults.putExtra("movieInfo", moviesInfo);
             displyResults.putExtra("description", listOfDescription);
+            displyResults.putExtra("image", listOfImage);
             startActivity(displyResults);
             finish();
         }
@@ -72,7 +76,8 @@ public class RecommendMoviesByCompany extends Activity {
     private void getListOfMovies(String searchKeyWord, TmdbApi accountApi, int id) {
         List<Collection> result = accountApi.getCompany().getCompanyMovies(id, "", 0).getResults();
         String releaseDate;
-        displayMovies = "Company" + " " + searchKeyWord + "\n";
+        displayMovies = "Company:" + " " + searchKeyWord + "\n";
+
         MovieDb movie;
 
 
@@ -88,14 +93,21 @@ public class RecommendMoviesByCompany extends Activity {
             displayMovies = displayMovies + result.get(i).getName() + "(" + releaseDate + ")" + "\n";
             movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
 
-            if(movie.getOverview().equals("")){
+            if(movie.getOverview() == null){
                 description = description + "NO DESCRIPTION YET" + "\n";
             } else {
                 description = description + movie.getOverview() + "\n";
             }
+            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() != null) {
+                image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
+
+            } else {
+                image = image + "\n";
+            }
         }
         moviesInfo = displayMovies.split("\\r?\\n");
         listOfDescription = description.split("\\r?\\n");
+        listOfImage = image.split("\\r?\\n");
     }
 
     private String getSearchKeyword() {

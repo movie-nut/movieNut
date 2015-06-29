@@ -2,24 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearance"
         android:textStyle="bold"
-        android:text="Medium Text"
+        android:text="Small Text"
         android:id="@+id/textView3"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="59dp"
+        android:layout_marginStart="59dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,7 +22,17 @@
         android:text="Small Text"
         android:id="@+id/textView4"
         android:layout_below="@+id/textView3"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3" />
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/textView4" />
 
 </RelativeLayout>

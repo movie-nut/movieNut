@@ -16,10 +16,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class DisplayResults extends Activity {
     int id;
     String[] moviesInfo;
     String[] description;
+    String[] image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -29,7 +34,7 @@ public class DisplayResults extends Activity {
         getMoviesInfo();
 
         ListView list = (ListView) findViewById(R.id.listView);
-        moviesAdapter adapter = new moviesAdapter(this, moviesInfo, description, description);
+        moviesAdapter adapter = new moviesAdapter(this, moviesInfo, description, image);
         list.setAdapter(adapter);
     }
 
@@ -37,6 +42,7 @@ public class DisplayResults extends Activity {
         Intent intent = getIntent();
         moviesInfo = intent.getStringArrayExtra("movieInfo");
         description = intent.getStringArrayExtra("description");
+        image = intent.getStringArrayExtra("image");
     }
 
 class moviesAdapter extends ArrayAdapter<String> {
@@ -58,17 +64,27 @@ class moviesAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View row = inflater.inflate(R.layout.single_row, parent, false);
-       ImageView myImage = (ImageView) row.findViewById(R.id.imageView2);
+      ImageView myImage = (ImageView) row.findViewById(R.id.imageView);
         TextView movieTitles = (TextView) row.findViewById(R.id.textView3);
         TextView myDescription = (TextView) row.findViewById(R.id.textView4);
 
-        //myImage.setImageResource(images[position]);
         movieTitles.setText(moviesInfo[position]);
         myDescription.setText(description[position]);
-        /*
-        Bitmap bmp = BitmapFactory.decodeStream(image.openConnection().getInputStream());
-        myImage.setImageBitmap(bmp);
-        */
+        URL url = null;
+      if(image.length > position && !image[position].equals("")) {
+          try {
+              url = new URL(image[position]);
+          } catch (MalformedURLException e) {
+              e.printStackTrace();
+          }
+          Bitmap bmp = null;
+          try {
+              bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+          myImage.setImageBitmap(bmp);
+      }
         return row;
     }
 }
