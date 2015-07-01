@@ -32,6 +32,7 @@ public class RecommendMovieByActor extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recommend_movie_by_people);
 
         String searchKeyWord = getSearchKeyword();
 

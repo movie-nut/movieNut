@@ -97,7 +97,7 @@ public class RecommendSimilarMovie extends Activity {
             } else {
                 description = description + result.get(i).getOverview() + "\n";
             }
-            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() != null) {
+            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
                 image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
 
             } else {

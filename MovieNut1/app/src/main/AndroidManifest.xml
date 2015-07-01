@@ -26,7 +26,8 @@
             android:name=".RecommendSimilarMovie" >
         </activity>
         <activity
-            android:name=".RecommendMoviesByDirectorAuthor" >
+            android:name=".RecommendMoviesByDirectorAuthor"
+            android:label="Select one">
         </activity>
         <activity
             android:name=".RecommendMovieByActor"

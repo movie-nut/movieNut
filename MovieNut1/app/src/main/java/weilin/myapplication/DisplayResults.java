@@ -27,7 +27,7 @@ public class DisplayResults extends Activity {
     String[] image;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_results);
 
