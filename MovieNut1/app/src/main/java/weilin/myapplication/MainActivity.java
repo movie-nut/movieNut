@@ -51,31 +51,31 @@ public class MainActivity extends Activity {
         Intent intent;
 
         if (selectedType.contains("Actors")) {
-            intent = new Intent(this, RecommendationHandler.class);
+            intent = new Intent(this, RecommendMovieByActor.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             intent.putExtra("typeOfRecommendation", "actors");
             startActivity(intent);
 
         } else if (selectedType.contains("Directors")) {
-            intent = new Intent(this, RecommendationHandler.class);
+            intent = new Intent(this, RecommendMoviesByDirectorAuthor.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             intent.putExtra("typeOfRecommendation", "directors");
             startActivity(intent);
 
         } else if (selectedType.equals("3. Movies")) {
-             intent = new Intent(this, RecommendationHandler.class);
+             intent = new Intent(this, RecommendSimilarMovie.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             intent.putExtra("typeOfRecommendation", "movies");
             startActivity(intent);
 
         } else if (selectedType.equals("4. Collections")) {
-            intent = new Intent(this, RecommendationHandler.class);
+            intent = new Intent(this, RecommendMoviesInCollection.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             intent.putExtra("typeOfRecommendation", "collections");
             startActivity(intent);
 
         } else if (selectedType.equals("5. Companies")) {
-            intent = new Intent(this, RecommendationHandler.class);
+            intent = new Intent(this, RecommendMoviesByCompany.class);
             intent.putExtra("searchKeyWord", searchKeyword);
             intent.putExtra("typeOfRecommendation", "company");
             startActivity(intent);

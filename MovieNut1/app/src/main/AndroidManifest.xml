@@ -23,21 +23,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecommendSimilarMovie" >
+            android:name=".RecommendSimilarMovie"
+            android:label="Click one out of the same title">
         </activity>
         <activity
-            android:name=".RecommendMoviesByDirectorAuthor"
-            android:label="Select one">
+            android:name=".RecommendMoviesByDirectorAuthor">
         </activity>
         <activity
-            android:name=".RecommendMovieByActor"
-            android:label="PPL" >
+            android:name=".RecommendMovieByActor">
         </activity>
         <activity
             android:name=".RecommendMoviesInCollection" >
         </activity>
         <activity
-            android:name=".RecommendMoviesByCompany">
+            android:name=".RecommendMoviesByCompany"
+            android:label="Click one out of the same company">
         </activity>
         <activity
             android:name=".DisplayResults"

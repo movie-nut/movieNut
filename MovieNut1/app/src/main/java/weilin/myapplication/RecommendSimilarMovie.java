@@ -1,15 +1,22 @@
 package weilin.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,45 +34,88 @@ import info.movito.themoviedbapi.model.Artwork;
 import info.movito.themoviedbapi.model.MovieDb;
 
 public class RecommendSimilarMovie extends Activity {
-    int id;
+    int idOfMovies;
     String displayMovies = "";
     String description = "";
     String[] listOfDescription;
     String[] moviesInfo;
     String[] listOfImage;
+    List<MovieDb> list;
+    TmdbApi accountApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recommend_movie_by_people);
 
         String searchKeyWord = getSearchKeyword();
-       // displayMovies = "similar movies as" + searchKeyWord + "/n";
+        // displayMovies = "similar movies as" + searchKeyWord + "/n";
 
         permitsNetwork();
 
-        TmdbApi accountApi = new TmdbApi("3f2950a48b75db414b1dbb148cfcad89");
+        accountApi = new TmdbApi("3f2950a48b75db414b1dbb148cfcad89");
         TmdbSearch searchResult = accountApi.getSearch();
-        List<MovieDb> list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
+        list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
 
-        getId(list);
+        String[] moviesName = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            moviesName[i] = list.get(i).getOriginalTitle() + "\n" + list.get(i).getOverview();
+        }
 
-        if (id == -1) {
-            returnHomePage();
-        } else {
+        ListView peopleNameList = (ListView) findViewById(R.id.listView2);
+        moviesAdapter adapter = new moviesAdapter(this, moviesName);
+        peopleNameList.setAdapter(adapter);
 
-            try {
-                getListOfMovies(accountApi);
-            } catch (IOException e) {
-                e.printStackTrace();
+        peopleNameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                getId(list, position);
+
+                if (idOfMovies == -1) {
+                    returnHomePage();
+                } else {
+
+                    try {
+                        getListOfMovies();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Intent displyResults = new Intent(RecommendSimilarMovie.this, DisplayResults.class);
+                    displyResults.putExtra("movieInfo", moviesInfo);
+                    displyResults.putExtra("description", listOfDescription);
+                    displyResults.putExtra("image", listOfImage);
+                    startActivity(displyResults);
+                }
             }
-            Intent displayResults = new Intent(this, DisplayResults.class);
-            displayResults.putExtra("movieInfo", moviesInfo);
-            displayResults.putExtra("description", listOfDescription);
-            displayResults.putExtra("image", listOfImage);
-            startActivity(displayResults);
-            finish();
+        });
+
     }
+
+
+class moviesAdapter extends ArrayAdapter<String> {
+    Context context;
+    String[] list;
+
+    moviesAdapter(Context c, String[] list) {
+        super(c, R.layout.selection_row, R.id.textView,list);
+        this.context = c;
+        this.list = list;
     }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View row = inflater.inflate(R.layout.selection_row, parent, false);
+        TextView name = (TextView) row.findViewById(R.id.textView);
+
+        name.setText(list[position]);
+
+        return row;
+    }
+
+}
 
     private void returnHomePage() {
         Intent returnHome = new Intent(this, MainActivity.class);
@@ -74,9 +124,9 @@ public class RecommendSimilarMovie extends Activity {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private void getListOfMovies(TmdbApi accountApi) throws IOException {
+    private void getListOfMovies() throws IOException {
         String releaseDate;
-        List<MovieDb> result = accountApi.getMovies().getSimilarMovies(id, "en", 0).getResults();
+        List<MovieDb> result = accountApi.getMovies().getSimilarMovies(idOfMovies, "", 0).getResults();
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
@@ -115,11 +165,11 @@ public class RecommendSimilarMovie extends Activity {
         return intent.getStringExtra("searchKeyWord");
     }
 
-    private void getId(List<MovieDb> list) {
+    private void getId(List<MovieDb> list, int position) {
         if(list.size() <= 0){
-            id = -1;
+            idOfMovies = -1;
         } else {
-            id = list.get(0).getId();
+            idOfMovies = list.get(position).getId();
         }
     }
 
