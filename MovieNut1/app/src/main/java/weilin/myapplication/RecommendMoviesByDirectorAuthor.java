@@ -61,7 +61,7 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
             TmdbSearch searchResult = accountApi.getSearch();
             List<Person> list = searchResult.searchPerson(searchKeyWord, false, null).getResults();
-
+/*
         peopleName = new String[list.size()];
         for(int i = 0; i < list.size(); i++){
             peopleName[i] = list.get(i).getName();
@@ -73,19 +73,19 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
 
         getId(list);
-
+*/
             if (id == -1) {
                 returnHomePage();
             } else {
                 getMoviesInString(accountApi);
-/*
+
                 Intent displyResults = new Intent(this, DisplayResults.class);
                 displyResults.putExtra("movieInfo", moviesInfo);
                 displyResults.putExtra("description", listOfDescription);
                 displyResults.putExtra("image", listOfImage);
                 startActivity(displyResults);
-*/
-               // finish();
+
+               finish();
             }
         }
 

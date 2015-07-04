@@ -28,6 +28,7 @@ public class RecommendMovieByActor extends Activity {
     String[] listOfImage;
     String[] listOfDescription;
     String[] moviesInfo;
+    String[] releaseDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class RecommendMovieByActor extends Activity {
             displyResults.putExtra("movieInfo", moviesInfo);
             displyResults.putExtra("description", listOfDescription);
             displyResults.putExtra("image", listOfImage);
+            displyResults.putExtra("releaseDate", releaseDates);
             startActivity(displyResults);
 
             finish();
@@ -75,7 +77,7 @@ public class RecommendMovieByActor extends Activity {
         if(Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original") != null) {
             image = Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original").toString() + "\n";
         } else {
-            image = "" + "\n";
+            image = " " + "\n";
         }
 
         if(accountApi.getPeople().getPersonInfo(id).getBiography() != null){
@@ -89,8 +91,11 @@ public class RecommendMovieByActor extends Activity {
 
         //    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(profile));
         //  startActivity(browserIntent);
+        releaseDates = new String[result.size() + 1];
+        releaseDates[0] = " ";
 
         for (int i = 0; i < result.size(); i++) {
+
             releaseDate = result.get(i).getReleaseDate();
             movieTitle = result.get(i).getMovieOriginalTitle();
 
@@ -102,8 +107,10 @@ public class RecommendMovieByActor extends Activity {
 
             if (releaseDate == null) {
                 releaseDate = "unknown";
+                releaseDates[i + 1] = " ";
             } else {
                 releaseDate = releaseDate.substring(0, 4);
+                releaseDates[i + 1] = releaseDate;
             }
 
             displayMovies = displayMovies + movieTitle +
@@ -124,7 +131,7 @@ public class RecommendMovieByActor extends Activity {
                 image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
 
             } else {
-                image = image + "\n";
+                image = image + " " + "\n";
             }
         }
 

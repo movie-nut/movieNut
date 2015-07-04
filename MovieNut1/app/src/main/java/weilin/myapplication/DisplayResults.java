@@ -19,12 +19,21 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class DisplayResults extends Activity {
-    int id;
     String[] moviesInfo;
     String[] description;
     String[] image;
+    String[] releaseDates;
+    ArrayList<Movies> movies = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -43,9 +52,47 @@ public class DisplayResults extends Activity {
         moviesInfo = intent.getStringArrayExtra("movieInfo");
         description = intent.getStringArrayExtra("description");
         image = intent.getStringArrayExtra("image");
+        releaseDates = intent.getStringArrayExtra("releaseDate");
+
+        try {
+            storeInMovieClass();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Collections.sort(movies, new Comparator<Movies>() {
+            public int compare(Movies o1, Movies o2) {
+                if (o1.getDate() == "" || o2.getDate() == "" || o1.getDate() == null || o2.getDate() == null) {
+                    return 0;
+                }
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
+
+        storeBackIntoString();
+
     }
 
-class moviesAdapter extends ArrayAdapter<String> {
+    private void storeBackIntoString() {
+        for(int i = 0; i < movies.size(); i++){
+            moviesInfo[i] = movies.get(i).getMovieTitle();
+            description[i] = movies.get(i).getDescription();
+            image[i] = movies.get(i).getImageURL();
+        }
+    }
+
+    private void storeInMovieClass() throws ParseException {
+
+        for(int i = 0; i < moviesInfo.length; i++){
+            movies.add(new Movies());
+            movies.get(i).setMovieTitle(moviesInfo[i]);
+            movies.get(i).setDecription(description[i]);
+            movies.get(i).setImageURL(image[i]);
+            movies.get(i).setDate(releaseDates[i]);
+        }
+    }
+
+    class moviesAdapter extends ArrayAdapter<String> {
     Context context;
     String[] moviesInfo;
     String[] description;
@@ -70,6 +117,7 @@ class moviesAdapter extends ArrayAdapter<String> {
 
         movieTitles.setText(moviesInfo[position]);
         myDescription.setText(description[position]);
+
         URL url = null;
       if(image.length > position && !image[position].equals("")) {
           try {
