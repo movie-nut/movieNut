@@ -63,9 +63,9 @@ public class DisplayResults extends Activity {
         Collections.sort(movies, new Comparator<Movies>() {
             public int compare(Movies o1, Movies o2) {
                 if (o1.getDate() == "" || o2.getDate() == "" || o1.getDate() == null || o2.getDate() == null) {
-                    return 0;
+                    return 1;
                 }
-                return o1.getDate().compareTo(o2.getDate());
+                return o2.getDate().compareTo(o1.getDate());
             }
         });
 
@@ -119,7 +119,7 @@ public class DisplayResults extends Activity {
         myDescription.setText(description[position]);
 
         URL url = null;
-      if(image.length > position && !image[position].equals("")) {
+      if(image.length > position && (!image[position].equals("") || !(image[position] == null))) {
           try {
               url = new URL(image[position]);
           } catch (MalformedURLException e) {
@@ -127,7 +127,9 @@ public class DisplayResults extends Activity {
           }
           Bitmap bmp = null;
           try {
-              bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+              if(url != null){
+                  bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+              }
           } catch (IOException e) {
               e.printStackTrace();
           }

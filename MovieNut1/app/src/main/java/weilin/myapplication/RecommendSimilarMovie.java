@@ -40,6 +40,7 @@ public class RecommendSimilarMovie extends Activity {
     String[] listOfDescription;
     String[] moviesInfo;
     String[] listOfImage;
+    String[] releaseDates;
     List<MovieDb> list;
     TmdbApi accountApi;
 
@@ -85,6 +86,7 @@ public class RecommendSimilarMovie extends Activity {
                     displyResults.putExtra("movieInfo", moviesInfo);
                     displyResults.putExtra("description", listOfDescription);
                     displyResults.putExtra("image", listOfImage);
+                    displyResults.putExtra("releaseDate", releaseDates);
                     startActivity(displyResults);
                 }
             }
@@ -131,12 +133,16 @@ class moviesAdapter extends ArrayAdapter<String> {
         // startActivity(browserIntent);
 
         String image = "";
+        releaseDates = new String[result.size()];
+
         for (int i = 0; i < result.size(); i++) {
             releaseDate = result.get(i).getReleaseDate();
             if(releaseDate == null){
                 releaseDate = "unknown";
+                releaseDates[i] = "";
             } else {
                 releaseDate = releaseDate.substring(0, 4);
+                releaseDates[i] = releaseDate;
             }
 
             displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
@@ -151,7 +157,7 @@ class moviesAdapter extends ArrayAdapter<String> {
                 image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
 
             } else {
-                image = image + "" + "\n";
+                image = image + " " + "\n";
             }
 
         }

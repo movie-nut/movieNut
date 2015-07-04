@@ -99,7 +99,7 @@ public class RecommendMovieByActor extends Activity {
             releaseDate = result.get(i).getReleaseDate();
             movieTitle = result.get(i).getMovieOriginalTitle();
 
-            if (result.get(i).getCharacter() == null) {
+            if (result.get(i).getCharacter() == null || result.get(i).getCharacter().equals("")) {
                 character = "NOT KNOWN YET";
             } else {
                 character = result.get(i).getCharacter();
