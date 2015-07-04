@@ -34,6 +34,7 @@ public class RecommendMoviesByCompany extends Activity {
     String[] listOfDescription;
     String[] moviesInfo;
     String[] companyName;
+    String[] releaseDates;
     int idOfMovies = -1;
     String searchKeyWord;
     TmdbApi accountApi;
@@ -69,7 +70,7 @@ public class RecommendMoviesByCompany extends Activity {
                                     int position, long id) {
                 getId(list, position);
 
-                if(idOfMovies == -1){
+                if (idOfMovies == -1) {
                     returnHomePage();
                 } else {
 
@@ -78,6 +79,7 @@ public class RecommendMoviesByCompany extends Activity {
                     displyResults.putExtra("movieInfo", moviesInfo);
                     displyResults.putExtra("description", listOfDescription);
                     displyResults.putExtra("image", listOfImage);
+                    displyResults.putExtra("releaseDate", releaseDates);
                     startActivity(displyResults);
                 }
             }
@@ -124,7 +126,6 @@ public class RecommendMoviesByCompany extends Activity {
         if(list.size() > 0){
             idOfMovies = list.get(position).getId();
             displayMovies = "Company:" + " " + list.get(position).getName() + "\n";
-
         }
     }
 
@@ -133,13 +134,17 @@ public class RecommendMoviesByCompany extends Activity {
         String releaseDate;
 
         MovieDb movie;
+        releaseDates = new String[result.size() + 1];
+        releaseDates[0] = "";
 
         for (int i = 0; i < result.size(); i++) {
             releaseDate = result.get(i).getReleaseDate();
             if(releaseDate == null){
                 releaseDate = "unknown";
+                releaseDates[i + 1] = "";
             } else {
                 releaseDate = releaseDate.substring(0, 4);
+                releaseDates[i + 1] = releaseDate;
             }
 
             displayMovies = displayMovies + result.get(i).getName() + "(" + releaseDate + ")" + "\n";
@@ -150,7 +155,7 @@ public class RecommendMoviesByCompany extends Activity {
             } else {
                 description = description + movie.getOverview() + "\n";
             }
-            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
+            if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
                 image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
 
             } else {

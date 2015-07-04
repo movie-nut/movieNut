@@ -45,13 +45,14 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         String[] listOfImage;
         String[] listOfDescription;
         String[] moviesInfo;
+    String[] releaseDates;
     String[] peopleName;
     private Menu menu;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommend_movie_by_people);
+      //  setContentView(R.layout.activity_recommend_movie_by_people);
 
         String searchKeyWord = getSearchKeyword();
 
@@ -61,7 +62,7 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
             TmdbSearch searchResult = accountApi.getSearch();
             List<Person> list = searchResult.searchPerson(searchKeyWord, false, null).getResults();
-
+/*
         peopleName = new String[list.size()];
         for(int i = 0; i < list.size(); i++){
             peopleName[i] = list.get(i).getName();
@@ -71,21 +72,22 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         moviesAdapter adapter = new moviesAdapter(this, peopleName);
         peopleNameList.setAdapter(adapter);
 
-
+*/
         getId(list);
 
             if (id == -1) {
                 returnHomePage();
             } else {
                 getMoviesInString(accountApi);
-/*
+
                 Intent displyResults = new Intent(this, DisplayResults.class);
                 displyResults.putExtra("movieInfo", moviesInfo);
                 displyResults.putExtra("description", listOfDescription);
                 displyResults.putExtra("image", listOfImage);
+                displyResults.putExtra("releaseDate", releaseDates);
                 startActivity(displyResults);
-*/
-               // finish();
+
+               finish();
             }
         }
 
@@ -99,8 +101,6 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         private void getMoviesInString(TmdbApi accountApi) {
 
             List<PersonCredit> result = accountApi.getPeople().getPersonCredits(id).getCrew();
-
-
             getSelectedInfo(accountApi, result);
 
         }
@@ -145,7 +145,7 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         if(Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original") != null) {
             image = Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original").toString() + "\n";
         } else {
-            image = "" + "\n";
+            image = " " + "\n";
         }
         if(accountApi.getPeople().getPersonInfo(id).getBiography() != null){
             description = accountApi.getPeople().getPersonInfo(id).getBiography();
@@ -155,14 +155,19 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
             description = "" + "\n";
         }
 
+        releaseDates = new String[result.size() + 1];
+        releaseDates[0] = "";
+
         for (int i = 0; i < result.size(); i++) {
             releaseDate = result.get(i).getReleaseDate();
             movieTitle = result.get(i).getMovieOriginalTitle();
 
             if (releaseDate == null) {
                 releaseDate = "unknown";
+                releaseDates[i + 1] = "";
             } else {
                 releaseDate = releaseDate.substring(0, 4);
+                releaseDates[i + 1] = releaseDate;
             }
 
             displayMovies = displayMovies + movieTitle +
@@ -181,7 +186,7 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
             if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
                 image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
             } else {
-                image = image + "\n";
+                image = image + " " + "\n";
             }
         }
 
