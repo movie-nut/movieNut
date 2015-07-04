@@ -63,7 +63,7 @@ public class DisplayResults extends Activity {
         Collections.sort(movies, new Comparator<Movies>() {
             public int compare(Movies o1, Movies o2) {
                 if (o1.getDate() == "" || o2.getDate() == "" || o1.getDate() == null || o2.getDate() == null) {
-                    return 1;
+                    return 0;
                 }
                 return o2.getDate().compareTo(o1.getDate());
             }
@@ -75,20 +75,20 @@ public class DisplayResults extends Activity {
 
     private void storeBackIntoString() {
         for(int i = 0; i < movies.size(); i++){
-            moviesInfo[i] = movies.get(i).getMovieTitle();
-            description[i] = movies.get(i).getDescription();
-            image[i] = movies.get(i).getImageURL();
+            moviesInfo[i + 1] = movies.get(i).getMovieTitle();
+            description[i + 1] = movies.get(i).getDescription();
+            image[i + 1] = movies.get(i).getImageURL();
         }
     }
 
     private void storeInMovieClass() throws ParseException {
 
-        for(int i = 0; i < moviesInfo.length; i++){
+        for(int i = 1; i < moviesInfo.length; i++){
             movies.add(new Movies());
-            movies.get(i).setMovieTitle(moviesInfo[i]);
-            movies.get(i).setDecription(description[i]);
-            movies.get(i).setImageURL(image[i]);
-            movies.get(i).setDate(releaseDates[i]);
+            movies.get(i - 1).setMovieTitle(moviesInfo[i]);
+            movies.get(i - 1).setDecription(description[i]);
+            movies.get(i - 1).setImageURL(image[i]);
+            movies.get(i - 1).setDate(releaseDates[i]);
         }
     }
 

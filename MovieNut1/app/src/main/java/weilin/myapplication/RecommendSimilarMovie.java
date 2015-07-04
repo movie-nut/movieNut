@@ -36,7 +36,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class RecommendSimilarMovie extends Activity {
     int idOfMovies;
     String displayMovies = "";
-    String description = "";
+    String description = "\n";
     String[] listOfDescription;
     String[] moviesInfo;
     String[] listOfImage;
@@ -132,17 +132,18 @@ class moviesAdapter extends ArrayAdapter<String> {
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
-        String image = "";
-        releaseDates = new String[result.size()];
+        String image = " " + "\n";
+        releaseDates = new String[result.size() + 1];
+        releaseDates[0] = "";
 
         for (int i = 0; i < result.size(); i++) {
             releaseDate = result.get(i).getReleaseDate();
             if(releaseDate == null){
                 releaseDate = "unknown";
-                releaseDates[i] = "";
+                releaseDates[i + 1] = "";
             } else {
                 releaseDate = releaseDate.substring(0, 4);
-                releaseDates[i] = releaseDate;
+                releaseDates[i + 1] = releaseDate;
             }
 
             displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
@@ -176,6 +177,7 @@ class moviesAdapter extends ArrayAdapter<String> {
             idOfMovies = -1;
         } else {
             idOfMovies = list.get(position).getId();
+            displayMovies = "Similar Movies of " + list.get(position).getOriginalTitle() + "\n";
         }
     }
 
