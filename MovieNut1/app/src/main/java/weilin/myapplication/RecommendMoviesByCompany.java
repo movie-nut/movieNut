@@ -28,8 +28,8 @@ import info.movito.themoviedbapi.model.MovieDb;
 
 public class RecommendMoviesByCompany extends Activity {
     String displayMovies = "";
-    String description = "\n";
-    String image = "\n";
+    String description = " " + "\n";
+    String image = " " + "\n";
     String[] listOfImage;
     String[] listOfDescription;
     String[] moviesInfo;
@@ -125,7 +125,7 @@ public class RecommendMoviesByCompany extends Activity {
     private void getId(List<Company> list, int position) {
         if(list.size() > 0){
             idOfMovies = list.get(position).getId();
-            displayMovies = "Company:" + " " + list.get(position).getName() + "\n";
+            displayMovies = "Movies made by " + " " + list.get(position).getName() + "\n";
         }
     }
 
