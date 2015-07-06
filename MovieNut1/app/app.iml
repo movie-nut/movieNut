@@ -86,13 +86,14 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="jackson-core-2.4.4" level="project" />
     <orderEntry type="library" exported="" name="jcl-over-slf4j-1.7.7" level="project" />
     <orderEntry type="library" exported="" name="jackson-databind-2.4.4" level="project" />
-    <orderEntry type="library" exported="" name="jackson-core-2.4.4" level="project" />
     <orderEntry type="library" exported="" name="javassist-3.18.1-GA" level="project" />
     <orderEntry type="library" exported="" name="jersey-guava-2.17" level="project" />
     <orderEntry type="library" exported="" name="aopalliance-repackaged-2.4.0-b10" level="project" />
     <orderEntry type="library" exported="" name="javax.ws.rs-api-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="jersey-common" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.3.2" level="project" />
     <orderEntry type="library" exported="" name="org.osgi.core-4.2.0" level="project" />
