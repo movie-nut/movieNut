@@ -34,6 +34,9 @@ public class SearchFeatures extends Activity {
 
         }
 
+    public void buttonOnClickFbLogin(View v) throws IOException {
+    }
+    
         public void buttonOnClick(View v) throws IOException {
             Button button = (Button) v;
             movieOut = (EditText) findViewById(R.id.txtAdd);
