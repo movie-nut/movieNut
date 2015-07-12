@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
@@ -36,7 +37,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class RecommendSimilarMovie extends Activity {
     int idOfMovies;
     String displayMovies = "";
-    String description = "\n";
+    String description = " " + "\n";
     String[] listOfDescription;
     String[] moviesInfo;
     String[] listOfImage;
@@ -58,44 +59,62 @@ public class RecommendSimilarMovie extends Activity {
         TmdbSearch searchResult = accountApi.getSearch();
         list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
 
-        String[] moviesName = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            moviesName[i] = list.get(i).getOriginalTitle() + "\n" + list.get(i).getOverview();
+        try {
+            if(list == null || list.size() <= 0){
+                throw new NullPointerException();
+            } else {
+                String[] moviesName = new String[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    moviesName[i] = list.get(i).getOriginalTitle() + "\n" + list.get(i).getOverview();
+                }
+
+                ListView movieList = (ListView) findViewById(R.id.listView2);
+                moviesAdapter adapter = new moviesAdapter(this, moviesName);
+                movieList.setAdapter(adapter);
+
+                selectOneMovie(movieList);
+
+            }
+        } catch (NullPointerException e) {
+            returnHomePage();
         }
 
-        ListView peopleNameList = (ListView) findViewById(R.id.listView2);
-        moviesAdapter adapter = new moviesAdapter(this, moviesName);
-        peopleNameList.setAdapter(adapter);
+    }
 
+    private void selectOneMovie(ListView peopleNameList) {
         peopleNameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 getId(list, position);
 
-                if (idOfMovies == -1) {
-                    returnHomePage();
-                } else {
+                try {
+                    List<MovieDb> result = accountApi.getMovies().getSimilarMovies(idOfMovies, "", 0).getResults();
 
-                    try {
-                        getListOfMovies();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (result == null || result.size() <= 0) {
+                        throw new NullPointerException();
+                    } else {
+                        getListOfMovies(result);
+                        Intent displyResults = new Intent(RecommendSimilarMovie.this, DisplayResults.class);
+                        displyResults.putExtra("movieInfo", moviesInfo);
+                        displyResults.putExtra("description", listOfDescription);
+                        displyResults.putExtra("image", listOfImage);
+                        displyResults.putExtra("releaseDate", releaseDates);
+                        startActivity(displyResults);
                     }
-                    Intent displyResults = new Intent(RecommendSimilarMovie.this, DisplayResults.class);
-                    displyResults.putExtra("movieInfo", moviesInfo);
-                    displyResults.putExtra("description", listOfDescription);
-                    displyResults.putExtra("image", listOfImage);
-                    displyResults.putExtra("releaseDate", releaseDates);
-                    startActivity(displyResults);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    returnHomePage();
                 }
-            }
-        });
 
+            }
+
+        });
     }
 
 
-class moviesAdapter extends ArrayAdapter<String> {
+    class moviesAdapter extends ArrayAdapter<String> {
     Context context;
     String[] list;
 
@@ -126,41 +145,43 @@ class moviesAdapter extends ArrayAdapter<String> {
         Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
     }
 
-    private void getListOfMovies() throws IOException {
+    private void getListOfMovies(List<MovieDb> result) throws IOException {
         String releaseDate;
-        List<MovieDb> result = accountApi.getMovies().getSimilarMovies(idOfMovies, "", 0).getResults();
         //  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89"));
         // startActivity(browserIntent);
 
         String image = " " + "\n";
         releaseDates = new String[result.size() + 1];
         releaseDates[0] = "";
+        Map<String, Boolean> map = Storage.loadMap(getApplicationContext());
 
         for (int i = 0; i < result.size(); i++) {
-            releaseDate = result.get(i).getReleaseDate();
-            if(releaseDate == null){
-                releaseDate = "unknown";
-                releaseDates[i + 1] = "";
-            } else {
-                releaseDate = releaseDate.substring(0, 4);
-                releaseDates[i + 1] = releaseDate;
+            if (map.get(String.valueOf(result.get(i).getId())) == null) {
+                releaseDate = result.get(i).getReleaseDate();
+                if (releaseDate == null) {
+                    releaseDate = "unknown";
+                    releaseDates[i + 1] = "";
+                } else {
+                    releaseDate = releaseDate.substring(0, 4);
+                    releaseDates[i + 1] = releaseDate;
+                }
+
+                displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
+                        + releaseDate + ")" + "\n";
+
+                if (result.get(i).getOverview() == null) {
+                    description = description + "NO DESCRIPTION YET" + "\n";
+                } else {
+                    description = description + result.get(i).getOverview() + "\n";
+                }
+                if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
+                    image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
+
+                } else {
+                    image = image + " " + "\n";
+                }
+
             }
-
-            displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
-                    + releaseDate + ")" + "\n";
-
-            if(result.get(i).getOverview() == null){
-                description = description + "NO DESCRIPTION YET" + "\n";
-            } else {
-                description = description + result.get(i).getOverview() + "\n";
-            }
-            if(Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
-                image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
-
-            } else {
-                image = image + " " + "\n";
-            }
-
         }
          moviesInfo = displayMovies.split("\\r?\\n");
          listOfDescription = description.split("\\r?\\n");
@@ -173,12 +194,9 @@ class moviesAdapter extends ArrayAdapter<String> {
     }
 
     private void getId(List<MovieDb> list, int position) {
-        if(list.size() <= 0){
-            idOfMovies = -1;
-        } else {
             idOfMovies = list.get(position).getId();
             displayMovies = "Similar Movies of " + list.get(position).getOriginalTitle() + "\n";
-        }
+
     }
 
     private void permitsNetwork() {
