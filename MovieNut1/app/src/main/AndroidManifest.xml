@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="weilin.myapplication" >
+    package="com.example.movienut.myapplication" >
 
     <!-- Internet Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,7 +36,7 @@
             android:name=".AddWatchedMovies">
         </activity>
         <activity
-            android:name=".RecommendMovieByActor">
+            android:name=".RecommendMoviesByActor">
         </activity>
         <activity
             android:name=".RecommendMoviesInCollection" >

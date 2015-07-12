@@ -1,5 +1,4 @@
-package weilin.myapplication;
-
+package com.example.movienut.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

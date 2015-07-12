@@ -1,4 +1,4 @@
-package weilin.myapplication;
+package com.example.movienut.myapplication;
 
 /**
  * Created by WeiLin on 4/7/15.
