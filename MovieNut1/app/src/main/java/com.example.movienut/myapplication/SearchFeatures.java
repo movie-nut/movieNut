@@ -1,4 +1,4 @@
-package weilin.myapplication;
+package com.example.movienut.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,8 +35,9 @@ public class SearchFeatures extends Activity {
         }
 
     public void buttonOnClickFbLogin(View v) throws IOException {
+
     }
-    
+
         public void buttonOnClick(View v) throws IOException {
             Button button = (Button) v;
             movieOut = (EditText) findViewById(R.id.txtAdd);
@@ -52,7 +53,7 @@ public class SearchFeatures extends Activity {
                     Intent intent = null;
 
                     if (selectedType.contains("Actors")) {
-                        intent = new Intent(this, RecommendMovieByActor.class);
+                        intent = new Intent(this, RecommendMoviesByActor.class);
 
 
                     } else if (selectedType.contains("Directors")) {

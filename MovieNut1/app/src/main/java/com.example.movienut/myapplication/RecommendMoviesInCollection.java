@@ -1,4 +1,4 @@
-package weilin.myapplication;
+package com.example.movienut.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.movienut.myapplication.DisplayResults;
+import com.example.movienut.myapplication.MainActivity;
 
 import java.util.List;
 
