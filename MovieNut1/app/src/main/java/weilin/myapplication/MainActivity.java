@@ -48,38 +48,29 @@ public class MainActivity extends Activity {
       //  http://api.themoviedb.org/3/movie/8966/similar?api_key=3f2950a48b75db414b1dbb148cfcad89
 
         doSpinner();
-        Intent intent;
+        Intent intent = null;
 
         if (selectedType.contains("Actors")) {
             intent = new Intent(this, RecommendMovieByActor.class);
-            intent.putExtra("searchKeyWord", searchKeyword);
-            intent.putExtra("typeOfRecommendation", "actors");
-            startActivity(intent);
+
 
         } else if (selectedType.contains("Directors")) {
             intent = new Intent(this, RecommendMoviesByDirectorAuthor.class);
-            intent.putExtra("searchKeyWord", searchKeyword);
-            intent.putExtra("typeOfRecommendation", "directors");
-            startActivity(intent);
+
 
         } else if (selectedType.equals("3. Movies")) {
              intent = new Intent(this, RecommendSimilarMovie.class);
-            intent.putExtra("searchKeyWord", searchKeyword);
-            intent.putExtra("typeOfRecommendation", "movies");
-            startActivity(intent);
+
 
         } else if (selectedType.equals("4. Collections")) {
             intent = new Intent(this, RecommendMoviesInCollection.class);
-            intent.putExtra("searchKeyWord", searchKeyword);
-            intent.putExtra("typeOfRecommendation", "collections");
-            startActivity(intent);
 
         } else if (selectedType.equals("5. Companies")) {
             intent = new Intent(this, RecommendMoviesByCompany.class);
-            intent.putExtra("searchKeyWord", searchKeyword);
-            intent.putExtra("typeOfRecommendation", "company");
-            startActivity(intent);
         }
+
+        intent.putExtra("searchKeyWord", searchKeyword);
+        startActivity(intent);
 }
 
     private void checkNullSearchValue(String searchKeyword) {
