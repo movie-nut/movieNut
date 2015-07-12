@@ -35,7 +35,7 @@ public class AddWatchedMovies extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_features);
+        setContentView(R.layout.activity_add_watched_movies);
 
         // ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.recommendationType, android.R.layout.simple_spinner_item);
         //spinner1.setAdapter(adapter);
