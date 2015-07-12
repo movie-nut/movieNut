@@ -70,6 +70,7 @@ public class AddWatchedMovies extends Activity {
     private void runSearchKeyword(String searchKeyword) {
         if(searchKeyword.equals("clearByAdmin")){
             Storage.saveMap(new HashMap<String, Boolean>(), getApplicationContext());
+            Toast.makeText(this, "ALL CLEAR!", Toast.LENGTH_LONG).show();
         } else {
             permitsNetwork();
 
@@ -123,6 +124,7 @@ public class AddWatchedMovies extends Activity {
                 Map<String, Boolean> map = Storage.loadMap(getApplicationContext());
                 map.put(String.valueOf(list.get(position).getId()), true);
                 Storage.saveMap(map, getApplicationContext());
+                Toast.makeText(getApplicationContext(), list.get(position).getOriginalTitle() +" is added as watched movie!", Toast.LENGTH_LONG).show();
             }
 
         });

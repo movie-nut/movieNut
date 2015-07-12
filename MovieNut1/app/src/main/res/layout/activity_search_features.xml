@@ -37,4 +37,14 @@
         android:layout_toLeftOf="@+id/button"
         android:layout_toStartOf="@+id/button" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Facebook Login"
+        android:id="@+id/button2"
+        android:layout_below="@+id/spinner"
+        android:layout_centerHorizontal="true"
+        android:onClick="buttonOnClickFbLogin" />
+
 </RelativeLayout>

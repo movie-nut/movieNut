@@ -23,9 +23,10 @@ public class MainActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
-        TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
+        TabHost tabHost = getTabHost();
+       // TabHost tabHost = (TabHost)findViewById(android.);
 
         tabHost.addTab(tabHost.newTabSpec("first").setIndicator("Search").setContent(new Intent(this, SearchFeatures.class)));
         tabHost.addTab(tabHost.newTabSpec("second").setIndicator("Add Watched Movies").setContent(new Intent(this, AddWatchedMovies.class)));
