@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class Storage {
 
-    private void saveMap(Map<String,Boolean> inputMap, Context context){
+    public static void saveMap(Map<String,Boolean> inputMap, Context context){
         SharedPreferences pSharedPref = context.getSharedPreferences("MyVariables", Context.MODE_PRIVATE);
         if (pSharedPref != null){
             JSONObject jsonObject = new JSONObject(inputMap);
@@ -26,7 +26,7 @@ public class Storage {
         }
     }
 
-    private Map<String,Boolean> loadMap(Context context){
+    public static Map<String,Boolean> loadMap(Context context){
         Map<String,Boolean> outputMap = new HashMap<String,Boolean>();
         SharedPreferences pSharedPref = context.getSharedPreferences("MyVariables", Context.MODE_PRIVATE);
         try{

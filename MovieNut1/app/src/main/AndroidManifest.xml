@@ -30,6 +30,12 @@
             android:name=".RecommendMoviesByDirectorAuthor">
         </activity>
         <activity
+            android:name=".SearchFeatures">
+        </activity>
+        <activity
+            android:name=".AddWatchedMovies">
+        </activity>
+        <activity
             android:name=".RecommendMovieByActor">
         </activity>
         <activity

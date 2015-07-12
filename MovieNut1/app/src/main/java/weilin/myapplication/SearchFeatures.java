@@ -36,7 +36,7 @@ public class SearchFeatures extends Activity {
 
         public void buttonOnClick(View v) throws IOException {
             Button button = (Button) v;
-            movieOut = (EditText) findViewById(R.id.txtMovies);
+            movieOut = (EditText) findViewById(R.id.txtAdd);
             // textout = (TextView) findViewById(R.id.textView);
 
             String searchKeyword = movieOut.getText().toString();
@@ -89,22 +89,9 @@ public class SearchFeatures extends Activity {
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_main, menu);
+            getMenuInflater().inflate(R.menu.menu_search_feature, menu);
             return true;
         }
-/*
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-     //   spinner1.getItemAtPosition(spinner1.getSelectedItemPosition()).toString());
-        TextView myText = (TextView) view;
-      //  Toast.makeText(this, "Select types of recommendation", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-    */
     }
 
 
