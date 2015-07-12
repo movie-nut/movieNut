@@ -54,38 +54,54 @@ public class RecommendMoviesByCompany extends Activity {
         TmdbSearch searchResult = accountApi.getSearch();
         list = searchResult.searchCompany(searchKeyWord, 0).getResults();
 
-        companyName = new String[list.size()];
-        for(int i = 0; i < list.size(); i++){
-            companyName[i] = list.get(i).getName();
+        try {
+            if (list == null || list.size() <= 0) {
+                throw new NullPointerException();
+            } else {
+                companyName = new String[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    companyName[i] = list.get(i).getName();
+                }
+
+                ListView peopleNameList = (ListView) findViewById(R.id.listView2);
+                moviesAdapter adapter = new moviesAdapter(this, companyName);
+                peopleNameList.setAdapter(adapter);
+
+                selectOneCompany(peopleNameList);
+            }
+        } catch (NullPointerException e) {
+            returnHomePage();
         }
+    }
 
-        ListView peopleNameList = (ListView) findViewById(R.id.listView2);
-        moviesAdapter adapter = new moviesAdapter(this, companyName);
-        peopleNameList.setAdapter(adapter);
-
+    private void selectOneCompany(ListView peopleNameList) {
         peopleNameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 getId(list, position);
 
-                if (idOfMovies == -1) {
+                try {
+                    List<Collection> result = accountApi.getCompany().getCompanyMovies(idOfMovies, "", 0).getResults();
+                    if (result == null || result.size() <= 0) {
+                        throw new NullPointerException();
+                    } else {
+                        getListOfMovies(accountApi, result);
+                        Intent displyResults = new Intent(RecommendMoviesByCompany.this, DisplayResults.class);
+                        displyResults.putExtra("movieInfo", moviesInfo);
+                        displyResults.putExtra("description", listOfDescription);
+                        displyResults.putExtra("image", listOfImage);
+                        displyResults.putExtra("releaseDate", releaseDates);
+                        startActivity(displyResults);
+                    }
+                } catch (NullPointerException e) {
                     returnHomePage();
-                } else {
-
-                    getListOfMovies(searchKeyWord, accountApi, idOfMovies);
-                    Intent displyResults = new Intent(RecommendMoviesByCompany.this, DisplayResults.class);
-                    displyResults.putExtra("movieInfo", moviesInfo);
-                    displyResults.putExtra("description", listOfDescription);
-                    displyResults.putExtra("image", listOfImage);
-                    displyResults.putExtra("releaseDate", releaseDates);
-                    startActivity(displyResults);
                 }
+
             }
+
         });
-
     }
-
 
 
     class moviesAdapter extends ArrayAdapter<String> {
@@ -128,8 +144,7 @@ public class RecommendMoviesByCompany extends Activity {
         }
     }
 
-    private void getListOfMovies(String searchKeyWord, TmdbApi accountApi, int id) {
-        List<Collection> result = accountApi.getCompany().getCompanyMovies(id, "", 0).getResults();
+    private void getListOfMovies(TmdbApi accountApi, List<Collection> result) {
         String releaseDate;
 
         MovieDb movie;

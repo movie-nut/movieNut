@@ -73,12 +73,25 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         peopleNameList.setAdapter(adapter);
 
 */
-        getId(list);
-
-            if (id == -1) {
-                returnHomePage();
+        try {
+            if(list == null || list.size() <= 0){
+                throw new NullPointerException();
             } else {
-                getMoviesInString(accountApi);
+                getId(list);
+                searchDirectorOrAuthor(accountApi);
+            }
+        } catch (NullPointerException e) {
+            returnHomePage();
+        }
+    }
+
+    private void searchDirectorOrAuthor(TmdbApi accountApi) {
+        try {
+            List<PersonCredit> result = accountApi.getPeople().getPersonCredits(id).getCrew();
+            if (result == null || result.size() <= 0) {
+                throw new NullPointerException();
+            } else {
+                getMoviesInString(accountApi, result);
 
                 Intent displyResults = new Intent(this, DisplayResults.class);
                 displyResults.putExtra("movieInfo", moviesInfo);
@@ -87,20 +100,22 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
                 displyResults.putExtra("releaseDate", releaseDates);
                 startActivity(displyResults);
 
-               finish();
+                finish();
             }
+        } catch (NullPointerException e) {
+            returnHomePage();
         }
+    }
 
-        private void returnHomePage() {
+
+    private void returnHomePage() {
             Intent returnHome = new Intent(this, MainActivity.class);
             startActivity(returnHome);
             this.finish();
             Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
         }
 
-        private void getMoviesInString(TmdbApi accountApi) {
-
-            List<PersonCredit> result = accountApi.getPeople().getPersonCredits(id).getCrew();
+        private void getMoviesInString(TmdbApi accountApi, List<PersonCredit> result) {
             getSelectedInfo(accountApi, result);
 
         }

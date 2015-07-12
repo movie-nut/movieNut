@@ -142,7 +142,7 @@ public class RecommendSimilarMovie extends Activity {
         Intent returnHome = new Intent(this, MainActivity.class);
         startActivity(returnHome);
         this.finish();
-        Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Movies could not be found!", Toast.LENGTH_LONG).show();
     }
 
     private void getListOfMovies(List<MovieDb> result) throws IOException {
@@ -158,34 +158,48 @@ public class RecommendSimilarMovie extends Activity {
         for (int i = 0; i < result.size(); i++) {
             if (map.get(String.valueOf(result.get(i).getId())) == null) {
                 releaseDate = result.get(i).getReleaseDate();
-                if (releaseDate == null) {
-                    releaseDate = "unknown";
-                    releaseDates[i + 1] = "";
-                } else {
-                    releaseDate = releaseDate.substring(0, 4);
-                    releaseDates[i + 1] = releaseDate;
-                }
+                releaseDate = addReleaseDate(releaseDate, i);
 
                 displayMovies = displayMovies + result.get(i).getOriginalTitle() + "("
                         + releaseDate + ")" + "\n";
 
-                if (result.get(i).getOverview() == null) {
-                    description = description + "NO DESCRIPTION YET" + "\n";
-                } else {
-                    description = description + result.get(i).getOverview() + "\n";
-                }
-                if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
-                    image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
-
-                } else {
-                    image = image + " " + "\n";
-                }
+                addDescription(result, i);
+                image = addImageUrl(result, image, i);
 
             }
         }
          moviesInfo = displayMovies.split("\\r?\\n");
          listOfDescription = description.split("\\r?\\n");
         listOfImage = image.split("\\r?\\n");
+    }
+
+    private String addImageUrl(List<MovieDb> result, String image, int i) {
+        if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
+            image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
+
+        } else {
+            image = image + " " + "\n";
+        }
+        return image;
+    }
+
+    private void addDescription(List<MovieDb> result, int i) {
+        if (result.get(i).getOverview() == null) {
+            description = description + "NO DESCRIPTION YET" + "\n";
+        } else {
+            description = description + result.get(i).getOverview() + "\n";
+        }
+    }
+
+    private String addReleaseDate(String releaseDate, int i) {
+        if (releaseDate == null) {
+            releaseDate = "unknown";
+            releaseDates[i + 1] = "";
+        } else {
+            releaseDate = releaseDate.substring(0, 4);
+            releaseDates[i + 1] = releaseDate;
+        }
+        return releaseDate;
     }
 
     private String getSearchKeyword() {
