@@ -48,9 +48,7 @@ public class RecommendMoviesInCollection extends Activity {
 
         getId(list);
 
-        if(id == -1){
-            returnHomePage();
-        } else {
+
 
             getMoviesInString(accountApi);
             Intent displyResults = new Intent(this, DisplayResults.class);
@@ -59,7 +57,7 @@ public class RecommendMoviesInCollection extends Activity {
             displyResults.putExtra("image", listOfImage);
             startActivity(displyResults);
             finish();
-        }
+
     }
 
     private void returnHomePage() {

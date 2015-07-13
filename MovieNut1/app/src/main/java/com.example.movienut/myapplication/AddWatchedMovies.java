@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +38,19 @@ public class AddWatchedMovies extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_watched_movies);
 
-        // ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.recommendationType, android.R.layout.simple_spinner_item);
-        //spinner1.setAdapter(adapter);
-        //spinner1.setOnItemSelectedListener(this);
+        Intent intent = getIntent();
+        ArrayList<Movies> watchedMovieList = (ArrayList<Movies>)getIntent().getSerializableExtra("watchedMovies");
 
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search_feature, menu);
-        return true;
+            for(int i = 0; i < watchedMovieList.size(); i++) {
+                watchedMovieList.get(i)
+
+
+                TmdbApi accountApi = new TmdbApi("3f2950a48b75db414b1dbb148cfcad89");
+                TmdbSearch searchResult = accountApi.getSearch();
+                list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
+            }
+
+
     }
 
     public void buttonOnClick1(View v) throws IOException {
@@ -124,7 +128,7 @@ public class AddWatchedMovies extends Activity {
                 Map<String, Boolean> map = Storage.loadMap(getApplicationContext());
                 map.put(String.valueOf(list.get(position).getId()), true);
                 Storage.saveMap(map, getApplicationContext());
-                Toast.makeText(getApplicationContext(), list.get(position).getOriginalTitle() +" is added as watched movie!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), list.get(position).getOriginalTitle() + " is added as watched movie!", Toast.LENGTH_LONG).show();
             }
 
         });

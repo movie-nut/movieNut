@@ -3,9 +3,6 @@ package com.example.movienut.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -13,17 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
@@ -37,8 +27,7 @@ import info.movito.themoviedbapi.model.people.PersonCredit;
  * Created by WeiLin on 29/6/15.
  */
 public class RecommendMoviesByDirectorAuthor extends Activity {
-
-        int id, positionInList;
+        int id;
         String displayMovies = "";
         String description;
         String image = "";
@@ -46,8 +35,6 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
         String[] listOfDescription;
         String[] moviesInfo;
     String[] releaseDates;
-    String[] peopleName;
-    private Menu menu;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -62,17 +49,9 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
             TmdbSearch searchResult = accountApi.getSearch();
             List<Person> list = searchResult.searchPerson(searchKeyWord, false, null).getResults();
-/*
-        peopleName = new String[list.size()];
-        for(int i = 0; i < list.size(); i++){
-            peopleName[i] = list.get(i).getName();
-        }
 
-        ListView peopleNameList = (ListView) findViewById(R.id.listView2);
-        moviesAdapter adapter = new moviesAdapter(this, peopleName);
-        peopleNameList.setAdapter(adapter);
 
-*/
+
         try {
             if(list == null || list.size() <= 0){
                 throw new NullPointerException();
@@ -112,7 +91,7 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
             Intent returnHome = new Intent(this, MainActivity.class);
             startActivity(returnHome);
             this.finish();
-            Toast.makeText(getApplicationContext(), "Movies or peoples could not be found!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Director or author could not be found!", Toast.LENGTH_LONG).show();
         }
 
         private void getMoviesInString(TmdbApi accountApi, List<PersonCredit> result) {
@@ -120,70 +99,22 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
         }
 
-
-    class moviesAdapter extends ArrayAdapter<String> {
-        Context context;
-        String[] list;
-
-        moviesAdapter(Context c, String[] list) {
-            super(c, R.layout.selection_row, R.id.textView,list);
-            this.context = c;
-            this.list = list;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent){
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            View row = inflater.inflate(R.layout.selection_row, parent, false);
-            TextView name = (TextView) row.findViewById(R.id.textView);
-/*
-            peopleName.setOnClickListener(new View.OnClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                   positionInList = position;
-                }
-            });
-*/
-            name.setText(list[position]);
-
-            return row;
-        }
-
-
-    }
-
     private void getSelectedInfo(TmdbApi accountApi, List<PersonCredit> result) {
         String releaseDate;
         String movieTitle;
         MovieDb movie;
-        if(Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original") != null) {
-            image = Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original").toString() + "\n";
-        } else {
-            image = " " + "\n";
-        }
-        if(accountApi.getPeople().getPersonInfo(id).getBiography() != null){
-            description = accountApi.getPeople().getPersonInfo(id).getBiography();
-            description = description.replaceAll("\\n", " ");
-            description = description + "\n";
-        } else {
-            description = "" + "\n";
-        }
+        getPeoplePhoto(accountApi);
+        getBiolography(accountApi);
 
         releaseDates = new String[result.size() + 1];
         releaseDates[0] = "";
 
         for (int i = 0; i < result.size(); i++) {
+            //if(map.get)
             releaseDate = result.get(i).getReleaseDate();
             movieTitle = result.get(i).getMovieOriginalTitle();
 
-            if (releaseDate == null) {
-                releaseDate = "unknown";
-                releaseDates[i + 1] = "";
-            } else {
-                releaseDate = releaseDate.substring(0, 4);
-                releaseDates[i + 1] = releaseDate;
-            }
+            releaseDate = getReleaseDates(releaseDate, i);
 
             displayMovies = displayMovies + movieTitle +
                     "(" + releaseDate + ")" + "Position as " + result.get(i).getJob() + "\n";
@@ -192,22 +123,59 @@ public class RecommendMoviesByDirectorAuthor extends Activity {
 
             movie = accountApi.getMovies().getMovie(result.get(i).getId(), "");
 
-            if (movie.getOverview() == null || movie.getOverview().equals("")) {
-                description = description + "NO DESCRIPTION YET" + "\n";
-            } else {
-                description = description + movie.getOverview() + "\n";
-            }
+            addDescription(movie);
 
-            if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
-                image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
-            } else {
-                image = image + " " + "\n";
-            }
+            addImageUrl(accountApi, result, i);
         }
 
         moviesInfo = displayMovies.split("\\r?\\n");
         listOfDescription = description.split("\\r?\\n");
         listOfImage = image.split("\\r?\\n");
+    }
+
+    private void getBiolography(TmdbApi accountApi) {
+        if(accountApi.getPeople().getPersonInfo(id).getBiography() != null){
+            description = accountApi.getPeople().getPersonInfo(id).getBiography();
+            description = description.replaceAll("\\n", " ");
+            description = description + "\n";
+        } else {
+            description = "" + "\n";
+        }
+    }
+
+    private void getPeoplePhoto(TmdbApi accountApi) {
+        if(Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original") != null) {
+            image = Utils.createImageUrl(accountApi, accountApi.getPeople().getPersonInfo(id).getProfilePath(), "original").toString() + "\n";
+        } else {
+            image = " " + "\n";
+        }
+    }
+
+    private void addImageUrl(TmdbApi accountApi, List<PersonCredit> result, int i) {
+        if (Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original") != null) {
+            image = image + Utils.createImageUrl(accountApi, result.get(i).getPosterPath(), "original").toString() + "\n";
+        } else {
+            image = image + " " + "\n";
+        }
+    }
+
+    private void addDescription(MovieDb movie) {
+        if (movie.getOverview() == null || movie.getOverview().equals("")) {
+            description = description + "NO DESCRIPTION YET" + "\n";
+        } else {
+            description = description + movie.getOverview() + "\n";
+        }
+    }
+
+    private String getReleaseDates(String releaseDate, int i) {
+        if (releaseDate == null) {
+            releaseDate = "unknown";
+            releaseDates[i + 1] = "";
+        } else {
+            releaseDate = releaseDate.substring(0, 4);
+            releaseDates[i + 1] = releaseDate;
+        }
+        return releaseDate;
     }
 
 

@@ -1,9 +1,11 @@
 package com.example.movienut.myapplication;
 
+import java.io.Serializable;
+
 /**
  * Created by WeiLin on 4/7/15.
  */
-public class Movies {
+public class Movies implements Serializable {
     private String movieTitle;
     private String date;
     private String description;

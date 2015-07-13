@@ -2,6 +2,7 @@ package com.example.movienut.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -107,6 +108,7 @@ public class RecommendMoviesByCompany extends Activity {
     class moviesAdapter extends ArrayAdapter<String> {
         Context context;
         String[] list;
+        private int[] colors = new int[] { Color.parseColor("#fffff1d6"), Color.parseColor("#D2E4FC") };
 
         moviesAdapter(Context c, String[] list) {
             super(c, R.layout.selection_row, R.id.textView,list);
@@ -120,6 +122,9 @@ public class RecommendMoviesByCompany extends Activity {
 
             View row = inflater.inflate(R.layout.selection_row, parent, false);
             TextView name = (TextView) row.findViewById(R.id.textView);
+
+            int colorPos = position % colors.length;
+            row.setBackgroundColor(colors[colorPos]);
 
             name.setText(list[position]);
 

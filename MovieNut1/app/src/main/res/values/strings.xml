@@ -7,10 +7,13 @@
 
     <string name="recommendation_prompt">Search by</string>
     <string-array name="recommendationType">
-        <item>1. Directors or Authors</item>
-        <item>2. Actors or Actresses</item>
-        <item>3. Similar Movies</item>
-        <item>4. Companies</item>
+        <item>Select search type: </item>
+        <item>1. Genre</item>
+        <item>2. Directors or Authors</item>
+        <item>3. Actors or Actresses</item>
+        <item>4. Similar Movies</item>
+        <item>5. Companies</item>
+
     </string-array>
     <string name="title_activity_recommend_movie_by_director">recommendMovieByDirector</string>
     <string name="title_activity_recommend_movies_in_collection">RecommendMoviesInCollection
