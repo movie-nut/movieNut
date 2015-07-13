@@ -38,25 +38,27 @@ public class AddWatchedMovies extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_watched_movies);
 
-        Intent intent = getIntent();
+        Map<String, Boolean> map = Storage.loadMap(getApplicationContext());
+
         ArrayList<Movies> watchedMovieList = (ArrayList<Movies>)getIntent().getSerializableExtra("watchedMovies");
 
             for(int i = 0; i < watchedMovieList.size(); i++) {
-                watchedMovieList.get(i)
-
-
                 TmdbApi accountApi = new TmdbApi("3f2950a48b75db414b1dbb148cfcad89");
                 TmdbSearch searchResult = accountApi.getSearch();
-                list = searchResult.searchMovie(searchKeyWord, null, "", false, null).getResults();
+                list = searchResult.searchMovie(watchedMovieList.get(i).getMovieTitle(), null, "", false, null).getResults();
+                for (int j = 0; j < list.size(); j++) {
+                    if (watchedMovieList.get(i).getDate().equals(list.get(i).getReleaseDate())) {
+                        map.put(String.valueOf(list.get(i).getId()), true);
+                        break;
+                    }
+                }
             }
 
-
+        Storage.saveMap(map, getApplicationContext());
     }
 
     public void buttonOnClick1(View v) throws IOException {
-        Button button = (Button) v;
         EditText movieOut = (EditText) findViewById(R.id.txtAdd);
-        // textout = (TextView) findViewById(R.id.textView);
 
         String searchKeyword = movieOut.getText().toString();
 
