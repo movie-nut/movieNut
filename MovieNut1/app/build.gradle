@@ -31,18 +31,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/api/javax.ws.rs-api-2.0.1.jar')
-    compile files('libs/ext/aopalliance-repackaged-2.4.0-b10.jar')
-    compile files('libs/ext/asm-debug-all-5.0.2.jar')
-    compile files('libs/ext/hk2-api-2.4.0-b10.jar')
-    compile files('libs/ext/hk2-locator-2.4.0-b10.jar')
-    compile files('libs/lib/jersey-client.jar')
-    compile files('libs/lib/jersey-common.jar')
-    compile files('libs/ext/jersey-guava-2.17.jar')
-    compile files('libs/ext/hk2-utils-2.4.0-b10.jar')
-    compile files('libs/ext/javassist-3.18.1-GA.jar')
-    compile files('libs/ext/org.osgi.core-4.2.0.jar')
+
     compile group: 'info.movito', name: 'themoviedbapi', version:'1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
